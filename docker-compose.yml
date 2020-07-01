@@ -1,0 +1,41 @@
+version: "3.3"
+
+networks:
+  helen-express:
+    external: false
+
+services:
+  db:
+    container_name: postgres
+    networks:
+      - helen-express
+    ports:
+      - "5432:5432"
+    image: postgres
+    environment:
+      - POSTGRES_PASSWORD=9m2nO9yLVrnGiprCJ4mX
+    restart: always
+
+  api:
+    container_name: helen-express-api
+    networks:
+      - helen-express
+    image: hieutran3010/helen-express-api:1.0.1
+    ports:
+      - "8000:80"
+      - "443:443"
+    volumes:
+      - .:/materials
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: https://+;http://+
+      ASPNETCORE_HTTPS_PORT: 443
+      ASPNETCORE_Kestrel__Certificates__Default__Password: password
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /materials/helenExpressApi.pfx
+      GOOGLE_APPLICATION_CREDENTIALS: /materials/service-account.json
+      FIREBASE_PROJECT_ID: helenexpress-b98df
+      SENTRY_DSN: https://813ca44d00934cbcb22ec6b90b9ffde8@o305988.ingest.sentry.io/5375081
+      CONNECTION_STRING: Host=postgres;Port=5432;Username=postgres;Password=9m2nO9yLVrnGiprCJ4mX;Database=HelenExpress
+    restart: always
+    depends_on:
+      - db

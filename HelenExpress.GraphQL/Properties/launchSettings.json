@@ -1,0 +1,34 @@
+{
+  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:9409",
+      "sslPort": 44349
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "HelenExpress.GraphQL": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "launchUrl": "weatherforecast",
+      "environmentVariables": {
+        "CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=1nS1t3;Database=HelenExpress;",
+        "GOOGLE_APPLICATION_CREDENTIALS": "/Users/hieutran/Downloads/helenexpress-b98df-firebase-adminsdk-oogfw-595b48cf5b.json",
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "FIREBASE_PROJECT_ID": "helenexpress-b98df",
+        "SENTRY_DSN": "https://813ca44d00934cbcb22ec6b90b9ffde8@o305988.ingest.sentry.io/5375081"
+      },
+      "applicationUrl": "https://localhost:5001;http://localhost:5000"
+    }
+  }
+}
