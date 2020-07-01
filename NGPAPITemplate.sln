@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.GraphQL", "Api.GraphQL\Api.GraphQL.csproj", "{0553BFBD-1288-416B-B894-1A8629E6118C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Data", "Api.Data\Api.Data.csproj", "{CFE3387A-9C16-450C-BDA3-5B4FA619443C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0553BFBD-1288-416B-B894-1A8629E6118C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0553BFBD-1288-416B-B894-1A8629E6118C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0553BFBD-1288-416B-B894-1A8629E6118C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0553BFBD-1288-416B-B894-1A8629E6118C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFE3387A-9C16-450C-BDA3-5B4FA619443C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFE3387A-9C16-450C-BDA3-5B4FA619443C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFE3387A-9C16-450C-BDA3-5B4FA619443C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFE3387A-9C16-450C-BDA3-5B4FA619443C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
