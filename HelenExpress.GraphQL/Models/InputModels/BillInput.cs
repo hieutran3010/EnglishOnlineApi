@@ -56,6 +56,7 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public string ZoneName { get; set; }
         public double? PurchasePriceAfterVatInUsd { get; set; }
         public int? PurchasePriceAfterVatInVnd { get; set; }
+        public bool IsPrintedVatBill { get; set; }
     }
 
     [InputType]
