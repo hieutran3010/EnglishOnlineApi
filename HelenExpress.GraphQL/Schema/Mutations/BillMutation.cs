@@ -86,7 +86,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 bill.VendorFuelChargePercent = vendor.FuelChargePercent ?? 0;
 
                 var appParamsRepo = this.UnitOfWork.GetRepository<Params>();
-                var usdExchangeRateParam = await appParamsRepo.GetQueryable().FirstOrDefaultAsync(ap => ap.Key == ParamsKey.VAT_PARAMS_KEY);
+                var usdExchangeRateParam = await appParamsRepo.GetQueryable().FirstOrDefaultAsync(ap => ap.Key == ParamsKey.USD_EXCHANGE_RATE);
                 if (usdExchangeRateParam != null)
                 {
                     bill.UsdExchangeRate = Convert.ToInt32(usdExchangeRateParam.Value);
