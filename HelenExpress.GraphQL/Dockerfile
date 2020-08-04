@@ -24,3 +24,7 @@ WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "HelenExpress.GraphQL.dll"]
 #CMD ASPNETCORE_URLS=http://*:$PORT dotnet AR.ProjectService.GraphQL.dll
+
+ENV TZ=Asia/Ho_Chi_Minh
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ >> /etc/timezone \
+    dpkg-reconfigure -f noninteractive tzdata
