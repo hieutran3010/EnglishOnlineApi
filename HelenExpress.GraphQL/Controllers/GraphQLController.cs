@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HelenExpress.GraphQL.Controllers
 {
     [Authorize]
-    [Route("api/graphql")]
+    [Route("graphql")]
     [ApiController]
     public class GraphQLController : ControllerBase
     {

@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 namespace HelenExpress.GraphQL.Controllers
 {
     [Authorize]
-    [Route("api/account")]
+    [Route("account")]
     [ApiController]
     public class AccountController : ControllerBase
     {

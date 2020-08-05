@@ -20,7 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace HelenExpress.GraphQL.Controllers
 {
     [Authorize]
-    [Route("api/export")]
+    [Route("export")]
     [ApiController]
     public class ExportController : ControllerBase
     {
