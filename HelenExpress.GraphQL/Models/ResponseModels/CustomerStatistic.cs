@@ -7,5 +7,6 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
         public double TotalSalePrice { get; set; }
         public double TotalPayment { get; set; }
         public double TotalDebt { get; set; }
+        public double TotalBill { get; set; }
     }
 }

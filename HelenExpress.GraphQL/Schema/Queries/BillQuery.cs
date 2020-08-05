@@ -42,7 +42,8 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     VendorName = group.Key.VendorName,
                     TotalDebt = group.Sum(b => b.VendorPaymentDebt) ?? 0,
                     TotalPayment = group.Sum(b=>b.VendorPaymentAmount) ?? 0,
-                    TotalPurchase = group.Sum(b=>b.PurchasePriceAfterVatInVnd) ?? 0
+                    TotalPurchase = group.Sum(b=>b.PurchasePriceAfterVatInVnd) ?? 0,
+                    TotalBill = group.Count()
                 }).ToListAsync();
 
             return result;
@@ -58,7 +59,8 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     SenderPhone = group.Key.SenderPhone,
                     TotalDebt = group.Sum(b => b.CustomerPaymentDebt) ?? 0,
                     TotalPayment = group.Sum(b=>b.CustomerPaymentAmount) ?? 0,
-                    TotalSalePrice = group.Sum(b=>b.SalePrice) ?? 0
+                    TotalSalePrice = group.Sum(b=>b.SalePrice) ?? 0,
+                    TotalBill = group.Count()
                 }).ToListAsync();
 
             return result;
