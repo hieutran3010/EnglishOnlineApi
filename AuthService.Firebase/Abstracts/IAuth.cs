@@ -14,6 +14,8 @@ namespace AuthService.Firebase.Abstracts
         Task<User> RegisterAccountAsync(User record, Guid? tenantId = null);
         Task GrantRolesAsync(string userId, string[] roles, Guid? tenantId);
         Task<User> GetUserAsync(string uid);
+        Task<User> GetUserByEmailAsync(string email);
+        Task<User> GetUserByPhoneAsync(string phone);
         Task UpdateUserAsync(string uid, User user);
 
         /// <summary>

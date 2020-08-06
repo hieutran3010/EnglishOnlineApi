@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using AuthService.Firebase.Abstracts;
 using AuthService.Firebase.Contracts;
@@ -65,6 +66,36 @@ namespace AuthService.Firebase.Firebase
         public async Task<User> GetUserAsync(string uid)
         {
             var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+
+            return new User
+            {
+                Id = userRecord.Uid,
+                Email = userRecord.Email,
+                PhoneNumber = userRecord.PhoneNumber,
+                DisplayName = userRecord.DisplayName,
+                Disabled = userRecord.Disabled,
+                Roles = GetUserRoles(userRecord.CustomClaims, null)
+            };
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+
+            return new User
+            {
+                Id = userRecord.Uid,
+                Email = userRecord.Email,
+                PhoneNumber = userRecord.PhoneNumber,
+                DisplayName = userRecord.DisplayName,
+                Disabled = userRecord.Disabled,
+                Roles = GetUserRoles(userRecord.CustomClaims, null)
+            };
+        }
+
+        public async Task<User> GetUserByPhoneAsync(string phone)
+        {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByPhoneNumberAsync(phone);
 
             return new User
             {
@@ -165,9 +196,9 @@ namespace AuthService.Firebase.Firebase
         public async Task UpdateUserAsync(string uid, User user)
         {
             var userRecord = await this.GetUserAsync(uid);
-            if (user != null) {
-                
-                var updatedUserRecord = await FirebaseAuth.DefaultInstance.UpdateUserAsync(new UserRecordArgs 
+            if (user != null)
+            {
+                var updatedUserRecord = await FirebaseAuth.DefaultInstance.UpdateUserAsync(new UserRecordArgs
                 {
                     Uid = uid,
                     Disabled = user.Disabled,
@@ -177,12 +208,12 @@ namespace AuthService.Firebase.Firebase
                 });
 
                 var hasChangedRole = false;
-                if(string.Join('|', userRecord.Roles) != string.Join('|', user.Roles))
+                if (string.Join('|', userRecord.Roles) != string.Join('|', user.Roles))
                 {
                     await this.SetUserRoles(updatedUserRecord, user.Roles, null);
                     hasChangedRole = true;
                 }
-                
+
                 if (hasChangedRole || user.Disabled)
                 {
                     await FirebaseAuth.DefaultInstance.RevokeRefreshTokensAsync(uid);

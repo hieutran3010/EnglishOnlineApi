@@ -32,6 +32,21 @@ namespace HelenExpress.GraphQL.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] User user)
         {
+            var existedUser = await this._auth.GetUserByEmailAsync(user.Email);
+            if (existedUser != null)
+            {
+                return this.BadRequest("EXISTED_EMAIL");
+            }
+
+            if (!string.IsNullOrWhiteSpace(user.PhoneNumber))
+            {
+                var existedUserWithPhone = await this._auth.GetUserByPhoneAsync(user.PhoneNumber);
+                if (existedUserWithPhone != null)
+                {
+                    return this.BadRequest("EXISTED_PHONE");
+                }
+            }
+            
             var newUser = await _auth.RegisterAccountAsync(user);
 
             var userRoleRepository = _unitOfWork.GetRepository<UserRole>();
