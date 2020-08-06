@@ -140,7 +140,8 @@ namespace HelenExpress.GraphQL.Controllers
                             if (bills.Any())
                             {
                                 var userIds = bills.SelectMany(b => new List<string> {b.Sale, b.Accountant, b.License})
-                                    .Distinct();
+                                    .Distinct().Where(u => !string.IsNullOrWhiteSpace(u));
+
                                 var authService = scope.ServiceProvider.GetRequiredService<IAuth>();
                                 var users = await authService.GetUsersByIds(userIds.ToArray());
 
@@ -150,9 +151,9 @@ namespace HelenExpress.GraphQL.Controllers
                                     join accountantUser in users on bill.Accountant equals accountantUser.Id
                                     select new
                                     {
-                                        Sale = saleUser.DisplayName,
-                                        License = licenseUser.DisplayName,
-                                        Accountant = accountantUser.DisplayName,
+                                        Sale = saleUser?.DisplayName,
+                                        License = licenseUser?.DisplayName,
+                                        Accountant = accountantUser?.DisplayName,
                                         bill.Sender,
                                         bill.Receiver,
                                         bill.Date,
