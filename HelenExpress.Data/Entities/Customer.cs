@@ -14,7 +14,7 @@ namespace HelenExpress.Data.Entities
 
         public string NickName { get; set; }
 
-        [UniqueIndex] public string Phone { get; set; }
+        [SimpleIndex] public string Phone { get; set; }
 
         [SimpleIndex] public string Address { get; set; }
 
