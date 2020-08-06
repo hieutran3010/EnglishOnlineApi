@@ -39,29 +39,22 @@ namespace AuthService.Firebase.Firebase
 
         public async Task<User> RegisterAccountAsync(User user, Guid? tenantId)
         {
-            try
+            var args = new UserRecordArgs
             {
-                var args = new UserRecordArgs
-                {
-                    Email = user.Email,
-                    EmailVerified = false,
-                    PhoneNumber = user.PhoneNumber,
-                    Password = user.Password,
-                    DisplayName = user.DisplayName,
-                    Disabled = false,
-                    PhotoUrl = user.AvatarUrl
-                };
-                var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(args);
-                user.Id = userRecord.Uid;
+                Email = user.Email,
+                EmailVerified = false,
+                PhoneNumber = user.PhoneNumber,
+                Password = user.Password,
+                DisplayName = user.DisplayName,
+                Disabled = false,
+                PhotoUrl = user.AvatarUrl
+            };
+            var userRecord = await FirebaseAuth.DefaultInstance.CreateUserAsync(args);
+            user.Id = userRecord.Uid;
 
-                if (user.Roles != null && user.Roles.Any()) await SetUserRoles(userRecord, user.Roles, tenantId);
+            if (user.Roles != null && user.Roles.Any()) await SetUserRoles(userRecord, user.Roles, tenantId);
 
-                return user;
-            }
-            catch (FirebaseAuthException e)
-            {
-                throw new HttpRequestException(e.AuthErrorCode.ToString(), e.InnerException);
-            }
+            return user;
         }
 
         public async Task GrantRolesAsync(string userId, string[] roles, Guid? tenantId)
@@ -73,6 +66,36 @@ namespace AuthService.Firebase.Firebase
         public async Task<User> GetUserAsync(string uid)
         {
             var userRecord = await FirebaseAuth.DefaultInstance.GetUserAsync(uid);
+
+            return new User
+            {
+                Id = userRecord.Uid,
+                Email = userRecord.Email,
+                PhoneNumber = userRecord.PhoneNumber,
+                DisplayName = userRecord.DisplayName,
+                Disabled = userRecord.Disabled,
+                Roles = GetUserRoles(userRecord.CustomClaims, null)
+            };
+        }
+
+        public async Task<User> GetUserByEmailAsync(string email)
+        {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+
+            return new User
+            {
+                Id = userRecord.Uid,
+                Email = userRecord.Email,
+                PhoneNumber = userRecord.PhoneNumber,
+                DisplayName = userRecord.DisplayName,
+                Disabled = userRecord.Disabled,
+                Roles = GetUserRoles(userRecord.CustomClaims, null)
+            };
+        }
+
+        public async Task<User> GetUserByPhoneAsync(string phone)
+        {
+            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByPhoneNumberAsync(phone);
 
             return new User
             {
