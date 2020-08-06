@@ -30,33 +30,33 @@ namespace HelenExpress.GraphQL.Controllers
         private readonly IFileService fileService;
         private readonly IServiceScopeFactory serviceScopeFactory;
 
-        private IDictionary<string, string> BillReportHeaderMappings = new Dictionary<string, string> 
+        private IDictionary<string, string> BillReportHeaderMappings = new Dictionary<string, string>
         {
-            { "License", "Chứng Từ" },
-            { "Accountant", "Kế Toán" },
-            { "Sender", "Khách Gởi" },
-            { "Receiver", "Khách Nhận" },
-            { "Date", "Ngày" },
-            { "ChildBillId", "Bill Con" },
-            { "AirlineBillId", "Bill Hãng Bay" },
-            { "VendorName", "Nhà Cung Cấp" },
-            { "InternationalParcelVendor", "Dịch Vụ" },
-            { "Description", "Thông Tin Hàng" },
-            { "DestinationCountry", "Nước Đến" },
-            { "WeightInKg", "Trọng Lượng(kg)" },
-            { "SalePrice", "Giá Bán(VNĐ)" },
-            { "CustomerPaymentType", "KHTT - Hình Thức" },
-            { "CustomerPaymentAmount", "KHTT - Đã Trả" },
-            { "CustomerPaymentDebt", "KHTT - Còn Nợ" },
-            { "VendorNetPriceInUsd", "Giá Net(USD)" },
-            { "VendorOtherFee", "Phí Khác(USD)" },
-            { "VendorFuelChargePercent", "Phí Nhiên Liệu(%)" },
-            { "PurchasePriceInUsd", "Giá Mua(USD)" },
-            { "UsdExchangeRate", "Tỷ Giá" },
-            { "PurchasePriceAfterVatInVnd", "Giá Mua Sau Thuế(VNĐ)" },
-            { "VendorPaymentType", "TTNCC - Hình Thức"},
-            { "VendorPaymentAmount", "TTNCC - Đã Trả"},
-            { "VendorPaymentDebt", "TTNCC - Còn Nợ"}
+            {"License", "Chứng Từ"},
+            {"Accountant", "Kế Toán"},
+            {"Sender", "Khách Gởi"},
+            {"Receiver", "Khách Nhận"},
+            {"Date", "Ngày"},
+            {"ChildBillId", "Bill Con"},
+            {"AirlineBillId", "Bill Hãng Bay"},
+            {"VendorName", "Nhà Cung Cấp"},
+            {"InternationalParcelVendor", "Dịch Vụ"},
+            {"Description", "Thông Tin Hàng"},
+            {"DestinationCountry", "Nước Đến"},
+            {"WeightInKg", "Trọng Lượng(kg)"},
+            {"SalePrice", "Giá Bán(VNĐ)"},
+            {"CustomerPaymentType", "KHTT - Hình Thức"},
+            {"CustomerPaymentAmount", "KHTT - Đã Trả"},
+            {"CustomerPaymentDebt", "KHTT - Còn Nợ"},
+            {"VendorNetPriceInUsd", "Giá Net(USD)"},
+            {"VendorOtherFee", "Phí Khác(USD)"},
+            {"VendorFuelChargePercent", "Phí Nhiên Liệu(%)"},
+            {"PurchasePriceInUsd", "Giá Mua(USD)"},
+            {"UsdExchangeRate", "Tỷ Giá"},
+            {"PurchasePriceAfterVatInVnd", "Giá Mua Sau Thuế(VNĐ)"},
+            {"VendorPaymentType", "TTNCC - Hình Thức"},
+            {"VendorPaymentAmount", "TTNCC - Đã Trả"},
+            {"VendorPaymentDebt", "TTNCC - Còn Nợ"}
         };
 
         public ExportController(IBackgroundTaskQueue<BillExportTaskContext> billExportTaskQueue,
@@ -145,15 +145,12 @@ namespace HelenExpress.GraphQL.Controllers
                                 var authService = scope.ServiceProvider.GetRequiredService<IAuth>();
                                 var users = await authService.GetUsersByIds(userIds.ToArray());
 
-                                var finalBills = (from bill in bills
-                                    join saleUser in users on bill.Sale equals saleUser.Id
-                                    join licenseUser in users on bill.License equals licenseUser.Id
-                                    join accountantUser in users on bill.Accountant equals accountantUser.Id
-                                    select new
+                                var finalBills = bills.Select(bill =>
+                                    new
                                     {
-                                        Sale = saleUser?.DisplayName,
-                                        License = licenseUser?.DisplayName,
-                                        Accountant = accountantUser?.DisplayName,
+                                        Sale = users.FirstOrDefault(u => u.Id == bill.Sale)?.DisplayName,
+                                        License = users.FirstOrDefault(u => u.Id == bill.License)?.DisplayName,
+                                        Accountant = users.FirstOrDefault(u => u.Id == bill.Accountant)?.DisplayName,
                                         bill.Sender,
                                         bill.Receiver,
                                         bill.Date,
