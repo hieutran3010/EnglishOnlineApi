@@ -80,32 +80,46 @@ namespace AuthService.Firebase.Firebase
 
         public async Task<User> GetUserByEmailAsync(string email)
         {
-            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
-
-            return new User
+            try
             {
-                Id = userRecord.Uid,
-                Email = userRecord.Email,
-                PhoneNumber = userRecord.PhoneNumber,
-                DisplayName = userRecord.DisplayName,
-                Disabled = userRecord.Disabled,
-                Roles = GetUserRoles(userRecord.CustomClaims, null)
-            };
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByEmailAsync(email);
+
+                return new User
+                {
+                    Id = userRecord.Uid,
+                    Email = userRecord.Email,
+                    PhoneNumber = userRecord.PhoneNumber,
+                    DisplayName = userRecord.DisplayName,
+                    Disabled = userRecord.Disabled,
+                    Roles = GetUserRoles(userRecord.CustomClaims, null)
+                };
+            }
+            catch (FirebaseAuthException e) when (e.Message.Contains($"Failed to get user with email: {email}"))
+            {
+                return null;
+            }
         }
 
         public async Task<User> GetUserByPhoneAsync(string phone)
         {
-            var userRecord = await FirebaseAuth.DefaultInstance.GetUserByPhoneNumberAsync(phone);
-
-            return new User
+            try
             {
-                Id = userRecord.Uid,
-                Email = userRecord.Email,
-                PhoneNumber = userRecord.PhoneNumber,
-                DisplayName = userRecord.DisplayName,
-                Disabled = userRecord.Disabled,
-                Roles = GetUserRoles(userRecord.CustomClaims, null)
-            };
+                var userRecord = await FirebaseAuth.DefaultInstance.GetUserByPhoneNumberAsync(phone);
+
+                return new User
+                {
+                    Id = userRecord.Uid,
+                    Email = userRecord.Email,
+                    PhoneNumber = userRecord.PhoneNumber,
+                    DisplayName = userRecord.DisplayName,
+                    Disabled = userRecord.Disabled,
+                    Roles = GetUserRoles(userRecord.CustomClaims, null)
+                };
+            }
+            catch (FirebaseAuthException e) when (e.Message.Contains("Failed to get user with phone number"))
+            {
+                return null;
+            }
         }
 
         public async Task<List<User>> GetUsersAsync(Guid? tenantId)
