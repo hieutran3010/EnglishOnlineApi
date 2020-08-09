@@ -8,7 +8,8 @@ namespace HelenExpress.Data
 
     public class InternationalParcelVendor
     {
-        public const string DHL = "DHL";
+        public const string DHL_VN = "DHL VN";
+        public const string DHL_SING = "DHL SING";
         public const string UPS = "UPS";
         public const string TNT = "TNT";
         public const string Fedex = "FEDEX";

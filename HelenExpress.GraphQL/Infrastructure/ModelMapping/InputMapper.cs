@@ -1,7 +1,7 @@
 using GraphQLDoorNet.Abstracts;
 using Mapster;
 
-namespace HelenExpress.GraphQL
+namespace HelenExpress.GraphQL.Infrastructure.ModelMapping
 {
     public class InputMapper: IInputMapper
     {

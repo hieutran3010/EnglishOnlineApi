@@ -11,6 +11,7 @@ using GraphQLDoorNet.Extensions;
 using HelenExpress.Data;
 using HelenExpress.Data.MiddleLayers;
 using HelenExpress.GraphQL.HostedServices.ExportBill;
+using HelenExpress.GraphQL.Infrastructure.ModelMapping;
 using HelenExpress.GraphQL.Schema;
 using HelenExpress.GraphQL.Services;
 using HelenExpress.GraphQL.Services.Abstracts;

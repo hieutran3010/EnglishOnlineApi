@@ -24,9 +24,10 @@ namespace HelenExpress.GraphQL.Schema.Mutations
     public class BillMutation : EntityMutationBase<Bill, BillInput>
     {
         private readonly IUserProvider userProvider;
-        public readonly IBillService billService;
+        private readonly IBillService billService;
 
-        public BillMutation(IUnitOfWork unitOfWork, IUserProvider userProvider, IInputMapper inputMapper, IBillService billService) : base(unitOfWork, inputMapper)
+        public BillMutation(IUnitOfWork unitOfWork, IUserProvider userProvider, IInputMapper inputMapper,
+            IBillService billService) : base(unitOfWork, inputMapper)
         {
             this.userProvider = userProvider;
             this.billService = billService;
@@ -41,7 +42,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 input.Status = BillStatus.Accountant;
             }
 
-            input.Period = input.Date.ToString("MM-yyyy");
+            this.FormatBillInput(input);
 
             await CheckAndSaveBillDescription(input.Description);
             return await base.Add(input);
@@ -54,8 +55,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             {
                 throw new UnauthorizedAccessException();
             }
-            
-            input.Period = input.Date.ToString("MM-yyyy");
+
+            this.FormatBillInput(input);
             
             if (role == Constants.UserRole.LICENSE)
             {
@@ -169,6 +170,13 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             var existed = await billDescriptionRepository.GetQueryable()
                 .FirstOrDefaultAsync(bd => bd.Name.ToLower() == description.ToLower());
             if (existed == null) await billDescriptionRepository.AddAsync(new BillDescription {Name = description});
+        }
+
+        private void FormatBillInput(BillInput input)
+        {
+            input.AirlineBillId = string.IsNullOrWhiteSpace(input.AirlineBillId) ? null : input.AirlineBillId;
+            input.ChildBillId = string.IsNullOrWhiteSpace(input.ChildBillId) ? null : input.ChildBillId;
+            input.Period = input.Date.ToString("MM-yyyy");
         }
     }
 }
