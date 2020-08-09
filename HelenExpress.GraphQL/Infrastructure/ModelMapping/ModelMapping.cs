@@ -3,7 +3,7 @@ using HelenExpress.Data.JSONModels;
 using HelenExpress.GraphQL.Models.InputModels;
 using Mapster;
 
-namespace HelenExpress.GraphQL
+namespace HelenExpress.GraphQL.Infrastructure.ModelMapping
 {
     public class ModelMapping
     {
