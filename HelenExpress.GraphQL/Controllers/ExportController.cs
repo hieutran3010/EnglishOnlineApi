@@ -177,9 +177,9 @@ namespace HelenExpress.GraphQL.Controllers
                                         bill.VendorPaymentDebt
                                     }).ToList();
 
-                                var csv = finalBills.ToCsv(BillReportHeaderMappings);
                                 var scopedFileService = scope.ServiceProvider.GetRequiredService<IFileService>();
-                                var filePath = scopedFileService.Save(csv, $"bill-export-{context.SessionId}.csv");
+                                var filePath = scopedFileService.SaveExcel(finalBills, BillReportHeaderMappings,
+                                    $"bill-export-{context.SessionId}.xlsx");
 
                                 newSession.Status = ExportSessionStatus.DONE;
                                 newSession.FilePath = filePath;

@@ -5,6 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
       <PackageReference Include="EFPostgresEngagement" Version="1.0.4" />
       <PackageReference Include="GraphQLDoorNet" Version="1.2.2" />
       <PackageReference Include="Mapster" Version="6.0.0" />
