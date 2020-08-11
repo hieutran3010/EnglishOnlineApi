@@ -29,6 +29,6 @@ stages:
         repository: '$(dockerAccount)/helen-express-api'
         tags: '$(Build.BuildNumber)'
         buildContext: '$(System.DefaultWorkingDirectory)'
-- task: SendTelegramNotification@0
-  inputs:
-    botToken: '1179405965:AAG_WogLBlCYBCEjBudkSUI9xPl-y23tIVk'
+    - task: SendTelegramNotification@0
+      inputs:
+        botToken: '1179405965:AAG_WogLBlCYBCEjBudkSUI9xPl-y23tIVk'
