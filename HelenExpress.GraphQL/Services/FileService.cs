@@ -1,10 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
 using System.Text;
-using System.Text.Json;
-using HelenExpress.GraphQL.Services.Contracts;
+using Newtonsoft.Json;
 using NPOI.XSSF.UserModel;
 
 namespace HelenExpress.GraphQL.Services
@@ -77,11 +74,7 @@ namespace HelenExpress.GraphQL.Services
             using var memoryStream = new MemoryStream();
             using (var archive = new ZipArchive(memoryStream, ZipArchiveMode.Create, true))
             {
-                var theFile = archive.CreateEntry(filePath);
-                using (var streamWriter = new StreamWriter(theFile.Open(), Encoding.UTF8))
-                {
-                    streamWriter.Write(File.ReadAllText(filePath));
-                }
+                archive.CreateEntryFromFile(filePath, Path.GetFileName(filePath));
             }
 
             return ("application/zip", memoryStream.ToArray(), zipName);
@@ -107,16 +100,7 @@ namespace HelenExpress.GraphQL.Services
 
         private DataTable ToDatatable<T>(IEnumerable<T> data)
         {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            var jsonUtf8Bytes = JsonSerializer.SerializeToUtf8Bytes(data, options);
-            var json = new ReadOnlySpan<byte>(jsonUtf8Bytes);
-
-            var result = JsonSerializer.Deserialize<DataTable>(json);
-
-            return result;
+            return (DataTable)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data), (typeof(DataTable)));
         }
     }
 }

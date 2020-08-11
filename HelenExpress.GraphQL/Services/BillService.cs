@@ -12,19 +12,21 @@ namespace HelenExpress.GraphQL.Services
 
     public class BillService : IBillService
     {
-        public async Task<PurchasePriceCountingResult> CountPurchasePriceAsync(IUnitOfWork unitOfWork, PurchasePriceCountingParams queryParams, Vendor vendor = null)
+        public async Task<PurchasePriceCountingResult> CountPurchasePriceAsync(IUnitOfWork unitOfWork,
+            PurchasePriceCountingParams queryParams, Vendor vendor = null)
         {
-            if (queryParams == null) 
+            if (queryParams == null)
             {
                 throw new HttpRequestException("You should provide the countParams");
             }
 
-            if (vendor == null) {
+            if (vendor == null)
+            {
                 var vendorRepository = unitOfWork.GetRepository<Vendor>();
                 vendor = await vendorRepository.GetQueryable().Where(v => v.Id == queryParams.VendorId)
                     .Include(v => v.Zones)
                     .FirstOrDefaultAsync();
-                if (vendor == null) 
+                if (vendor == null)
                 {
                     throw new HttpRequestException("Cannot find vendor");
                 }
@@ -52,11 +54,12 @@ namespace HelenExpress.GraphQL.Services
         private PurchasePriceCountingResult CountVendorNetPriceInUsd(Vendor vendor, PurchasePriceCountingParams @params,
             Zone zone)
         {
-            var result = new PurchasePriceCountingResult {
+            var result = new PurchasePriceCountingResult
+            {
                 ZoneName = zone.Name
             };
 
-            if (vendor.VendorQuotations == null || !vendor.VendorQuotations.Any()) 
+            if (vendor.VendorQuotations == null || !vendor.VendorQuotations.Any())
             {
                 return result;
             }
@@ -70,10 +73,10 @@ namespace HelenExpress.GraphQL.Services
 
             // get quotation by zone
             var fixedZone = quotationByWeight.ZonePrices.FirstOrDefault(z => z.ZoneId == zone.Id);
-            if (fixedZone == null) 
+            if (fixedZone == null)
             {
                 return result;
-            };
+            }
 
             var countPerOneKg = quotationByWeight.StartWeight.HasValue;
             var quotationPriceInUsd = fixedZone.PriceInUsd ?? 0;
@@ -81,12 +84,16 @@ namespace HelenExpress.GraphQL.Services
                 ? quotationPriceInUsd
                 : @params.WeightInKg * quotationPriceInUsd;
 
-            var purchasePriceInUsd = (netPriceInUsd + @params.OtherFeeInUsd) * @params.FuelChargePercent;
-            result.FuelChargeFeeInUsd = Math.Round(purchasePriceInUsd / 100, 4);
-            result.FuelChargeFeeInVnd = (int) (result.FuelChargeFeeInUsd * @params.UsdExchangeRate);
+            var purchasePriceInUsd = netPriceInUsd + @params.OtherFeeInUsd;
+            if (@params.FuelChargePercent > 0)
+            {
+                purchasePriceInUsd = purchasePriceInUsd * @params.FuelChargePercent;
+                result.FuelChargeFeeInUsd = Math.Round(purchasePriceInUsd / 100, 4);
+                result.FuelChargeFeeInVnd = (int) (result.FuelChargeFeeInUsd * @params.UsdExchangeRate);
+            }
 
             var purchasePriceAfterVatInUsd = purchasePriceInUsd;
-            if (@params.Vat.HasValue) 
+            if (@params.Vat.HasValue)
             {
                 purchasePriceAfterVatInUsd += purchasePriceInUsd * (@params.Vat.Value / 100);
             }

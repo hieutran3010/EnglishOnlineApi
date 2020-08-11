@@ -30,7 +30,7 @@ namespace HelenExpress.GraphQL.Controllers
         private readonly IFileService fileService;
         private readonly IServiceScopeFactory serviceScopeFactory;
 
-        private IDictionary<string, string> BillReportHeaderMappings = new Dictionary<string, string>
+        private readonly IDictionary<string, string> BillReportHeaderMappings = new Dictionary<string, string>
         {
             {"License", "Chứng Từ"},
             {"Accountant", "Kế Toán"},
