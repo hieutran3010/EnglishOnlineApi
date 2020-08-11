@@ -17,18 +17,7 @@
     <ItemGroup>
       <ProjectReference Include="..\BackgroundTaskQueueNet\BackgroundTaskQueueNet.csproj" />
       <ProjectReference Include="..\HelenExpress.Data\HelenExpress.Data.csproj" />
-      <ProjectReference Include="..\AuthService.Firebase\AuthService.Firebase.csproj">
-        <GlobalPropertiesToRemove></GlobalPropertiesToRemove>
-      </ProjectReference>
+      <ProjectReference Include="..\AuthService.Firebase\AuthService.Firebase.csproj" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Content Update="Controllers\package.json">
-        <ExcludeFromSingleFile>true</ExcludeFromSingleFile>
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-      </Content>
-    </ItemGroup>
-
 
 </Project>
