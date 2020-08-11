@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using HelenExpress.GraphQL.Services.Contracts;
+
 namespace HelenExpress.GraphQL.Services.Abstracts
 {
     public interface IFileService
@@ -8,7 +11,9 @@ namespace HelenExpress.GraphQL.Services.Abstracts
         /// <param name="fileContent">The file content under string</param>
         /// <param name="fileName">The file name with extension csv or txt</param>
         /// <returns>The file path</returns>
-        string Save(string fileContent, string fileName);
+        string SaveCsv(string fileContent, string fileName);
+
+        string SaveExcel<T>(IEnumerable<T> data, IDictionary<string, string> headerMappings, string fileName);
 
         /// <summary>
         /// Fetch file
