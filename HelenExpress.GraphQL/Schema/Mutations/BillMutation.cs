@@ -36,9 +36,12 @@ namespace HelenExpress.GraphQL.Schema.Mutations
         public override async Task<Bill> Add(BillInput input)
         {
             var role = this.userProvider.GetRole();
-            if (role == Constants.UserRole.LICENSE) {
+            if (role == Constants.UserRole.LICENSE)
+            {
                 input.Status = BillStatus.License;
-            } else if (role == Constants.UserRole.ACCOUNTANT || role == Constants.UserRole.ADMIN) {
+            }
+            else if (role == Constants.UserRole.ACCOUNTANT || role == Constants.UserRole.ADMIN)
+            {
                 input.Status = BillStatus.Accountant;
             }
 
@@ -48,7 +51,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             return await base.Add(input);
         }
 
-        public override Task<Bill> Update(Guid id, BillInput input)
+        public override async Task<Bill> Update(Guid id, BillInput input)
         {
             var role = this.userProvider.GetRole();
             if (string.IsNullOrWhiteSpace(role) || role == Constants.UserRole.SALE)
@@ -57,51 +60,69 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             }
 
             this.FormatBillInput(input);
-            
+
             if (role == Constants.UserRole.LICENSE)
             {
                 // a way to ignore unauthorized fields for license user
                 var licenseBillInput = input.Adapt<LicenseBillInput>();
-                input = licenseBillInput.Adapt<BillInput>();
+                var billRepo = this.UnitOfWork.GetRepository<Bill>();
+                var existedBill = await billRepo.GetQueryable().FirstOrDefaultAsync(b => b.Id == id);
+                var updatedBill = licenseBillInput.Adapt(existedBill);
+                billRepo.Update(updatedBill);
+                await this.UnitOfWork.SaveChangesAsync();
+                return updatedBill;
             }
-            
-            return base.Update(id, input);
+
+            return await base.Update(id, input);
         }
 
-        public async Task<MutationResult> AssignToAccountant(AssignToAccountantInput input) 
+        public async Task<MutationResult> AssignToAccountant(AssignToAccountantInput input)
         {
             var billId = input.BillId;
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(bill => bill.Id == billId);
-            if (bill == null) {
+            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == billId);
+            if (bill == null)
+            {
                 throw new HttpRequestException($"Cannot find bill with bill with id = [{billId}]");
+            }
+
+            bill.Status = BillStatus.Accountant;
+
+            if (!string.IsNullOrWhiteSpace(bill.AccountantUserId))
+            {
+                billRepository.Update(bill);
+                await this.UnitOfWork.SaveChangesAsync();
+                return new MutationResult {DidSuccess = true};
             }
 
             var vendorRepository = this.UnitOfWork.GetRepository<Vendor>();
             var vendor = await vendorRepository.GetQueryable().Where(v => v.Id == bill.VendorId)
-                    .Include(v => v.Zones)
-                    .FirstOrDefaultAsync();
-            if (vendor != null) {
-                bill.Status = BillStatus.Accountant;
+                .Include(v => v.Zones)
+                .FirstOrDefaultAsync();
+            if (vendor != null)
+            {
                 bill.VendorOtherFee = vendor.OtherFeeInUsd ?? 0;
                 bill.VendorFuelChargePercent = vendor.FuelChargePercent ?? 0;
 
                 var appParamsRepo = this.UnitOfWork.GetRepository<Params>();
-                var usdExchangeRateParam = await appParamsRepo.GetQueryable().FirstOrDefaultAsync(ap => ap.Key == ParamsKey.USD_EXCHANGE_RATE);
+                var usdExchangeRateParam = await appParamsRepo.GetQueryable()
+                    .FirstOrDefaultAsync(ap => ap.Key == ParamsKey.USD_EXCHANGE_RATE);
                 if (usdExchangeRateParam != null)
                 {
                     bill.UsdExchangeRate = Convert.ToInt32(usdExchangeRateParam.Value);
                 }
 
-                var purchasePrice = await this.billService.CountPurchasePriceAsync(this.UnitOfWork, new PurchasePriceCountingParams {
-                    VendorId = bill.VendorId,
-                    DestinationCountry = bill.DestinationCountry,
-                    FuelChargePercent = bill.VendorFuelChargePercent,
-                    OtherFeeInUsd = bill.VendorOtherFee,
-                    Vat = bill.Vat,
-                    UsdExchangeRate = bill.UsdExchangeRate ?? 0,
-                    WeightInKg = bill.WeightInKg
-                }, vendor);
+                var purchasePrice = await this.billService.CountPurchasePriceAsync(this.UnitOfWork,
+                    new PurchasePriceCountingParams
+                    {
+                        VendorId = bill.VendorId,
+                        DestinationCountry = bill.DestinationCountry,
+                        FuelChargePercent = bill.VendorFuelChargePercent,
+                        OtherFeeInUsd = bill.VendorOtherFee,
+                        Vat = bill.Vat,
+                        UsdExchangeRate = bill.UsdExchangeRate ?? 0,
+                        WeightInKg = bill.WeightInKg
+                    }, vendor);
 
                 bill.QuotationPriceInUsd = purchasePrice.QuotationPriceInUsd;
                 bill.VendorNetPriceInUsd = purchasePrice.VendorNetPriceInUsd;
@@ -139,7 +160,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
         public async Task<MutationResult> ArchiveBill(ArchiveBillInput input)
         {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b=>b.Id == input.BillId);
+            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == input.BillId);
             if (bill != null)
             {
                 bill.IsArchived = true;
@@ -149,7 +170,9 @@ namespace HelenExpress.GraphQL.Schema.Mutations
 
             return new MutationResult {DidSuccess = true};
         }
-        public async Task<MutationResult> CheckPrintedVatBill(Guid billId)  {
+
+        public async Task<MutationResult> CheckPrintedVatBill(Guid billId)
+        {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
             var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == billId);
             if (bill != null)
