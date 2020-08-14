@@ -22,9 +22,9 @@ namespace HelenExpress.Data.Entities
 
         [SimpleIndex] public string Period { get; set; }
 
-        [UniqueIndex] public string ChildBillId { get; set; }
+        [SimpleIndex] public string ChildBillId { get; set; }
 
-        [UniqueIndex] public string AirlineBillId { get; set; }
+        [SimpleIndex] public string AirlineBillId { get; set; }
 
         public Guid VendorId { get; set; }
         public string VendorName { get; set; }
