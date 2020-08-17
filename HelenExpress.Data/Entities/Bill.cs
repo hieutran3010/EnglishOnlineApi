@@ -1,7 +1,9 @@
 #region
 
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using EFPostgresEngagement.DataAnnotationAttributes;
+using HelenExpress.Data.JSONModels;
 
 #endregion
 
@@ -37,6 +39,7 @@ namespace HelenExpress.Data.Entities
         public string Description { get; set; }
         public string DestinationCountry { get; set; }
         public double WeightInKg { get; set; }
+        public double? VendorWeightInKg { get; set; }
         public double? SalePrice { get; set; }
         public double? PurchasePriceInUsd { get; set; }
         public int? PurchasePriceInVnd { get; set; }
@@ -62,5 +65,8 @@ namespace HelenExpress.Data.Entities
         public double? QuotationPriceInUsd { get; set; }
         public string ZoneName { get; set; }
         public bool IsPrintedVatBill { get; set; }
+        
+        [Column(TypeName = "jsonb")]
+        public PurchasePrice OldPurchasePrice { get; set; }
     }
 }
