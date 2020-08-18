@@ -1,18 +1,11 @@
-﻿using HelenExpress.Data.JSONModels;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace HelenExpress.Data.Migrations
 {
-    public partial class HandleWeightChangeByVendorFeature : Migration
+    public partial class HanldleWeightAdjustByVendor : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<PurchasePrice>(
-                name: "oldpurchaseprice",
-                table: "bill",
-                type: "jsonb",
-                nullable: true);
-
             migrationBuilder.AddColumn<double>(
                 name: "vendorweightinkg",
                 table: "bill",
@@ -21,10 +14,6 @@ namespace HelenExpress.Data.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropColumn(
-                name: "oldpurchaseprice",
-                table: "bill");
-
             migrationBuilder.DropColumn(
                 name: "vendorweightinkg",
                 table: "bill");

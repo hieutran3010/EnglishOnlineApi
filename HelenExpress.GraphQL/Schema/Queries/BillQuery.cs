@@ -35,31 +35,32 @@ namespace HelenExpress.GraphQL.Schema.Queries
         public async Task<List<VendorStatistic>> GetVendorStatistic(string query)
         {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var result = await billRepository.GetQueryable().Where(query).GroupBy(b => new { b.VendorId, b.VendorName })
+            var result = await billRepository.GetQueryable().Where(query).GroupBy(b => new {b.VendorId, b.VendorName})
                 .Select(group => new VendorStatistic
                 {
                     VendorId = group.Key.VendorId,
                     VendorName = group.Key.VendorName,
                     TotalDebt = group.Sum(b => b.VendorPaymentDebt) ?? 0,
-                    TotalPayment = group.Sum(b=>b.VendorPaymentAmount) ?? 0,
-                    TotalPurchase = group.Sum(b=>b.PurchasePriceAfterVatInVnd) ?? 0,
+                    TotalPayment = group.Sum(b => b.VendorPaymentAmount) ?? 0,
+                    TotalPurchase = group.Sum(b => b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalBill = group.Count()
                 }).ToListAsync();
 
             return result;
         }
-        
+
         public async Task<List<CustomerStatistic>> GetCustomerStatistic(string query)
         {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var result = await billRepository.GetQueryable().Where(query).GroupBy(b => new { b.SenderName, b.SenderPhone })
+            var result = await billRepository.GetQueryable().Where(query)
+                .GroupBy(b => new {b.SenderName, b.SenderPhone})
                 .Select(group => new CustomerStatistic
                 {
                     SenderName = group.Key.SenderName,
                     SenderPhone = group.Key.SenderPhone,
                     TotalDebt = group.Sum(b => b.CustomerPaymentDebt) ?? 0,
-                    TotalPayment = group.Sum(b=>b.CustomerPaymentAmount) ?? 0,
-                    TotalSalePrice = group.Sum(b=>b.SalePrice) ?? 0,
+                    TotalPayment = group.Sum(b => b.CustomerPaymentAmount) ?? 0,
+                    TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
                     TotalBill = group.Count()
                 }).ToListAsync();
 

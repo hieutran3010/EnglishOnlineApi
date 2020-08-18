@@ -104,10 +104,6 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("timezone('utc'::text, now())");
 
-                    b.Property<PurchasePrice>("OldPurchasePrice")
-                        .HasColumnName("oldpurchaseprice")
-                        .HasColumnType("jsonb");
-
                     b.Property<string>("Period")
                         .HasColumnName("period")
                         .HasColumnType("citext");

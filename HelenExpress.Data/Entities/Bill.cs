@@ -65,8 +65,5 @@ namespace HelenExpress.Data.Entities
         public double? QuotationPriceInUsd { get; set; }
         public string ZoneName { get; set; }
         public bool IsPrintedVatBill { get; set; }
-        
-        [Column(TypeName = "jsonb")]
-        public PurchasePrice OldPurchasePrice { get; set; }
     }
 }
