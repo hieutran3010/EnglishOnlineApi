@@ -104,6 +104,10 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("timezone('utc'::text, now())");
 
+                    b.Property<double?>("OldWeightInKg")
+                        .HasColumnName("oldweightinkg")
+                        .HasColumnType("double precision");
+
                     b.Property<string>("Period")
                         .HasColumnName("period")
                         .HasColumnType("citext");
@@ -227,10 +231,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<string>("VendorPaymentType")
                         .HasColumnName("vendorpaymenttype")
                         .HasColumnType("citext");
-
-                    b.Property<double?>("VendorWeightInKg")
-                        .HasColumnName("vendorweightinkg")
-                        .HasColumnType("double precision");
 
                     b.Property<double>("WeightInKg")
                         .HasColumnName("weightinkg")

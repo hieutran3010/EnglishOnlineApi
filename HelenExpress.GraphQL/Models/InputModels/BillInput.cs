@@ -32,6 +32,7 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public string Description { get; set; }
         public string DestinationCountry { get; set; }
         public double WeightInKg { get; set; }
+        public double? OldWeightInKg { get; set; }
         public double? SalePrice { get; set; }
          public double? PurchasePriceInUsd { get; set; }
         public double? PurchasePriceInVnd { get; set; }

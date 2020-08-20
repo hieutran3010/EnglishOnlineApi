@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    [Migration("20200818090716_HanldleWeightAdjustByVendor")]
-    partial class HanldleWeightAdjustByVendor
+    [Migration("20200820124044_HandleWeightAndOldWeight")]
+    partial class HandleWeightAndOldWeight
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -105,6 +105,10 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnName("modifiedon")
                         .HasColumnType("timestamp with time zone")
                         .HasDefaultValueSql("timezone('utc'::text, now())");
+
+                    b.Property<double?>("OldWeightInKg")
+                        .HasColumnName("oldweightinkg")
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Period")
                         .HasColumnName("period")
@@ -229,10 +233,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<string>("VendorPaymentType")
                         .HasColumnName("vendorpaymenttype")
                         .HasColumnType("citext");
-
-                    b.Property<double?>("VendorWeightInKg")
-                        .HasColumnName("vendorweightinkg")
-                        .HasColumnType("double precision");
 
                     b.Property<double>("WeightInKg")
                         .HasColumnName("weightinkg")

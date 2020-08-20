@@ -2,12 +2,12 @@
 
 namespace HelenExpress.Data.Migrations
 {
-    public partial class HanldleWeightAdjustByVendor : Migration
+    public partial class HandleWeightAndOldWeight : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<double>(
-                name: "vendorweightinkg",
+                name: "oldweightinkg",
                 table: "bill",
                 nullable: true);
         }
@@ -15,7 +15,7 @@ namespace HelenExpress.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "vendorweightinkg",
+                name: "oldweightinkg",
                 table: "bill");
         }
     }
