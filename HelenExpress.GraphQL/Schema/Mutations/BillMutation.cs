@@ -76,9 +76,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             return await base.Update(id, input);
         }
 
-        public async Task<MutationResult> AssignToAccountant(AssignToAccountantInput input)
+        public async Task<Bill> AssignToAccountant(Guid billId)
         {
-            var billId = input.BillId;
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
             var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == billId);
             if (bill == null)
@@ -92,7 +91,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             {
                 billRepository.Update(bill);
                 await this.UnitOfWork.SaveChangesAsync();
-                return new MutationResult {DidSuccess = true};
+                return bill;
             }
 
             var vendorRepository = this.UnitOfWork.GetRepository<Vendor>();
@@ -138,7 +137,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 await UnitOfWork.SaveChangesAsync();
             }
 
-            return new MutationResult {DidSuccess = true};
+            return bill;
         }
 
         public async Task<MutationResult> FinalBill(FinalBillInput input)
