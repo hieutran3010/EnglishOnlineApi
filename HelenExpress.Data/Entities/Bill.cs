@@ -1,7 +1,9 @@
 #region
 
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using EFPostgresEngagement.DataAnnotationAttributes;
+using HelenExpress.Data.JSONModels;
 
 #endregion
 
@@ -18,6 +20,7 @@ namespace HelenExpress.Data.Entities
         public string ReceiverName { get; set; }
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
+        public string PackageStatus { get; set; }
         [SimpleIndex] public DateTime Date { get; set; }
 
         [SimpleIndex] public string Period { get; set; }
@@ -37,6 +40,7 @@ namespace HelenExpress.Data.Entities
         public string Description { get; set; }
         public string DestinationCountry { get; set; }
         public double WeightInKg { get; set; }
+        public double? OldWeightInKg { get; set; }
         public double? SalePrice { get; set; }
         public double? PurchasePriceInUsd { get; set; }
         public int? PurchasePriceInVnd { get; set; }

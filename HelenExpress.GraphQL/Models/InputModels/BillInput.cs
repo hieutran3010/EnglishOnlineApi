@@ -29,9 +29,11 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public Guid? SenderId { get; set; }
         public Guid? ReceiverId { get; set; }
         public string InternationalParcelVendor { get; set; }
+        public string PackageStatus { get; set; }
         public string Description { get; set; }
         public string DestinationCountry { get; set; }
         public double WeightInKg { get; set; }
+        public double? OldWeightInKg { get; set; }
         public double? SalePrice { get; set; }
          public double? PurchasePriceInUsd { get; set; }
         public double? PurchasePriceInVnd { get; set; }
