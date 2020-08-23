@@ -37,6 +37,10 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public double? SalePrice { get; set; }
          public double? PurchasePriceInUsd { get; set; }
         public double? PurchasePriceInVnd { get; set; }
+        public double? OldPurchasePriceInUsd { get; set; }
+        public int? OldPurchasePriceInVnd { get; set; }
+        public double? OldPurchasePriceAfterVatInUsd { get; set; }
+        public int? OldPurchasePriceAfterVatInVnd { get; set; }
         public double? Profit { get; set; }
         public double? ProfitBeforeTax { get; set; }
         public uint? Vat { get; set; }
