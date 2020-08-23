@@ -14,10 +14,10 @@ namespace HelenExpress.Data.Entities
         public string SaleUserId { get; set; }
         public string LicenseUserId { get; set; }
         public string AccountantUserId { get; set; }
-        public string SenderName { get; set; }
+        [SimpleIndex] public string SenderName { get; set; }
         public string SenderPhone { get; set; }
         public string SenderAddress { get; set; }
-        public string ReceiverName { get; set; }
+        [SimpleIndex] public string ReceiverName { get; set; }
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
         public string PackageStatus { get; set; }
@@ -46,6 +46,10 @@ namespace HelenExpress.Data.Entities
         public int? PurchasePriceInVnd { get; set; }
         public double? PurchasePriceAfterVatInUsd { get; set; }
         public int? PurchasePriceAfterVatInVnd { get; set; }
+        public double? OldPurchasePriceInUsd { get; set; }
+        public int? OldPurchasePriceInVnd { get; set; }
+        public double? OldPurchasePriceAfterVatInUsd { get; set; }
+        public int? OldPurchasePriceAfterVatInVnd { get; set; }
         public double? Profit { get; set; }
         public double? ProfitBeforeTax { get; set; }
         public uint? Vat { get; set; }
