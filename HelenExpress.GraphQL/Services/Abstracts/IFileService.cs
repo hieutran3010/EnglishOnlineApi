@@ -13,7 +13,8 @@ namespace HelenExpress.GraphQL.Services.Abstracts
         /// <returns>The file path</returns>
         string SaveCsv(string fileContent, string fileName);
 
-        string SaveExcel<T>(IEnumerable<T> data, IDictionary<string, string> headerMappings, string fileName);
+        string SaveExcel<T>(IEnumerable<T> data, IDictionary<string, ExcelFieldDefinition> headerMappings,
+            string fileName);
 
         /// <summary>
         /// Fetch file
