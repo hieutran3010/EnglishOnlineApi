@@ -1,7 +1,10 @@
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Text;
+using HelenExpress.GraphQL.Services.Contracts;
 using Newtonsoft.Json;
+using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 
 namespace HelenExpress.GraphQL.Services
@@ -22,7 +25,8 @@ namespace HelenExpress.GraphQL.Services
             return filePath;
         }
 
-        public string SaveExcel<T>(IEnumerable<T> data, IDictionary<string, string> headerMappings, string fileName)
+        public string SaveExcel<T>(IEnumerable<T> data, IDictionary<string, ExcelFieldDefinition> headerMappings,
+            string fileName)
         {
             var filePath = Path.Combine(Path.GetTempPath(), fileName);
             var header = this.GetHeader<T>(headerMappings);
@@ -38,8 +42,11 @@ namespace HelenExpress.GraphQL.Services
             var columns = new List<string>();
             foreach (var field in header)
             {
-                columns.Add(field.Key);
-                row.CreateCell(columnIndex).SetCellValue(field.Value);
+                var propName = field.Key;
+                var propDisplayName = field.Value;
+
+                columns.Add(propName);
+                row.CreateCell(columnIndex).SetCellValue(propDisplayName);
                 columnIndex++;
             }
 
@@ -50,7 +57,30 @@ namespace HelenExpress.GraphQL.Services
                 var cellIndex = 0;
                 foreach (var col in columns)
                 {
-                    row.CreateCell(cellIndex).SetCellValue(dataRow[col].ToString());
+                    var propName = col;
+                    var cellType = CellType.String;
+                    if (headerMappings.ContainsKey(propName))
+                    {
+                        var fieldDefinition = headerMappings[propName];
+                        if (fieldDefinition.FieldType != null && (fieldDefinition.FieldType == typeof(int) ||
+                                                                  fieldDefinition.FieldType == typeof(double)))
+                        {
+                            cellType = CellType.Numeric;
+                        }
+                    }
+
+                    var cellValue = dataRow[col]?.ToString();
+                    if (cellType == CellType.String)
+                    {
+                        row.CreateCell(cellIndex).SetCellValue(cellValue);
+                    }
+                    else
+                    {
+                        var value = double.Parse(string.IsNullOrWhiteSpace(cellValue) ? "0" : cellValue,
+                            NumberStyles.Any);
+                        row.CreateCell(cellIndex, cellType).SetCellValue(value);
+                    }
+
                     cellIndex++;
                 }
 
@@ -80,16 +110,16 @@ namespace HelenExpress.GraphQL.Services
             return ("application/zip", memoryStream.ToArray(), zipName);
         }
 
-        private IDictionary<string, string> GetHeader<T>(IDictionary<string, string> headerMappings)
+        private IDictionary<string, string> GetHeader<T>(IDictionary<string, ExcelFieldDefinition> headerMappings)
         {
             // create header
-            var info = typeof(T).GetProperties();
             var header = new Dictionary<string, string>();
             foreach (var prop in typeof(T).GetProperties())
             {
                 var headerName = prop.Name;
-                if (headerMappings.ContainsKey(prop.Name)) {
-                    headerName = headerMappings[prop.Name];
+                if (headerMappings.ContainsKey(prop.Name))
+                {
+                    headerName = headerMappings[prop.Name].DisplayText;
                 }
 
                 header.Add(prop.Name, headerName);
@@ -100,7 +130,7 @@ namespace HelenExpress.GraphQL.Services
 
         private DataTable ToDatatable<T>(IEnumerable<T> data)
         {
-            return (DataTable)JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data), (typeof(DataTable)));
+            return (DataTable) JsonConvert.DeserializeObject(JsonConvert.SerializeObject(data), (typeof(DataTable)));
         }
     }
 }

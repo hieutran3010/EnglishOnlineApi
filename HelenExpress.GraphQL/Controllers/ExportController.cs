@@ -9,9 +9,9 @@ using GraphQLDoorNet.Abstracts;
 using HelenExpress.Data;
 using HelenExpress.Data.Entities;
 using HelenExpress.GraphQL.HostedServices.ExportBill;
-using HelenExpress.GraphQL.Infrastructure.Extensions;
 using HelenExpress.GraphQL.Models.InputModels;
 using HelenExpress.GraphQL.Services.Abstracts;
+using HelenExpress.GraphQL.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -30,34 +30,38 @@ namespace HelenExpress.GraphQL.Controllers
         private readonly IFileService fileService;
         private readonly IServiceScopeFactory serviceScopeFactory;
 
-        private readonly IDictionary<string, string> BillReportHeaderMappings = new Dictionary<string, string>
-        {
-            {"License", "Chứng Từ"},
-            {"Accountant", "Kế Toán"},
-            {"Sender", "Khách Gởi"},
-            {"Receiver", "Khách Nhận"},
-            {"Date", "Ngày"},
-            {"ChildBillId", "Bill Con"},
-            {"AirlineBillId", "Bill Hãng Bay"},
-            {"VendorName", "Nhà Cung Cấp"},
-            {"InternationalParcelVendor", "Dịch Vụ"},
-            {"Description", "Thông Tin Hàng"},
-            {"DestinationCountry", "Nước Đến"},
-            {"WeightInKg", "Trọng Lượng(kg)"},
-            {"SalePrice", "Giá Bán(VNĐ)"},
-            {"CustomerPaymentType", "KHTT - Hình Thức"},
-            {"CustomerPaymentAmount", "KHTT - Đã Trả"},
-            {"CustomerPaymentDebt", "KHTT - Còn Nợ"},
-            {"VendorNetPriceInUsd", "Giá Net(USD)"},
-            {"VendorOtherFee", "Phí Khác(USD)"},
-            {"VendorFuelChargePercent", "Phí Nhiên Liệu(%)"},
-            {"PurchasePriceInUsd", "Giá Mua(USD)"},
-            {"UsdExchangeRate", "Tỷ Giá"},
-            {"PurchasePriceAfterVatInVnd", "Giá Mua Sau Thuế(VNĐ)"},
-            {"VendorPaymentType", "TTNCC - Hình Thức"},
-            {"VendorPaymentAmount", "TTNCC - Đã Trả"},
-            {"VendorPaymentDebt", "TTNCC - Còn Nợ"}
-        };
+        private readonly IDictionary<string, ExcelFieldDefinition> billReportHeaderMappings =
+            new Dictionary<string, ExcelFieldDefinition>
+            {
+                {"License", new ExcelFieldDefinition("Chứng Từ")},
+                {"Accountant", new ExcelFieldDefinition("Kế Toán")},
+                {"Sender", new ExcelFieldDefinition("Khách Gởi")},
+                {"Receiver", new ExcelFieldDefinition("Khách Nhận")},
+                {"Date", new ExcelFieldDefinition("Ngày")},
+                {"AirlineBillId", new ExcelFieldDefinition("Bill Hãng Bay")},
+                {"ChildBillId", new ExcelFieldDefinition("Bill Con")},
+                {"VendorName", new ExcelFieldDefinition("Nhà Cung Cấp")},
+                {"InternationalParcelVendor", new ExcelFieldDefinition("Dịch Vụ")},
+                {"Description", new ExcelFieldDefinition("Thông Tin Hàng")},
+                {"DestinationCountry", new ExcelFieldDefinition("Nước Đến")},
+                {"WeightInKg", new ExcelFieldDefinition("Trọng Lượng(kg)") {FieldType = typeof(double)}},
+                {"SalePrice", new ExcelFieldDefinition("Giá Bán(VNĐ)") {FieldType = typeof(double)}},
+                {"CustomerPaymentType", new ExcelFieldDefinition("KHTT - Hình Thức")},
+                {"CustomerPaymentAmount", new ExcelFieldDefinition("KHTT - Đã Trả") {FieldType = typeof(double)}},
+                {"CustomerPaymentDebt", new ExcelFieldDefinition("KHTT - Còn Nợ") {FieldType = typeof(double)}},
+                {"VendorNetPriceInUsd", new ExcelFieldDefinition("Giá Net(USD)") {FieldType = typeof(double)}},
+                {"VendorOtherFee", new ExcelFieldDefinition("Phí Khác(USD)") {FieldType = typeof(double)}},
+                {"VendorFuelChargePercent", new ExcelFieldDefinition("Phí Nhiên Liệu(%)") {FieldType = typeof(double)}},
+                {"PurchasePriceInUsd", new ExcelFieldDefinition("Giá Mua(USD)") {FieldType = typeof(double)}},
+                {"UsdExchangeRate", new ExcelFieldDefinition("Tỷ Giá") {FieldType = typeof(int)}},
+                {
+                    "PurchasePriceAfterVatInVnd",
+                    new ExcelFieldDefinition("Giá Mua Sau Thuế(VNĐ)") {FieldType = typeof(int)}
+                },
+                {"VendorPaymentType", new ExcelFieldDefinition("TTNCC - Hình Thức")},
+                {"VendorPaymentAmount", new ExcelFieldDefinition("TTNCC - Đã Trả") {FieldType = typeof(double)}},
+                {"VendorPaymentDebt", new ExcelFieldDefinition("TTNCC - Còn Nợ") {FieldType = typeof(double)}}
+            };
 
         public ExportController(IBackgroundTaskQueue<BillExportTaskContext> billExportTaskQueue,
             IUserProvider userProvider, IUnitOfWork unitOfWork, IFileService fileService,
@@ -178,7 +182,7 @@ namespace HelenExpress.GraphQL.Controllers
                                     }).ToList();
 
                                 var scopedFileService = scope.ServiceProvider.GetRequiredService<IFileService>();
-                                var filePath = scopedFileService.SaveExcel(finalBills, BillReportHeaderMappings,
+                                var filePath = scopedFileService.SaveExcel(finalBills, billReportHeaderMappings,
                                     $"bill-export-{context.SessionId}.xlsx");
 
                                 newSession.Status = ExportSessionStatus.DONE;
