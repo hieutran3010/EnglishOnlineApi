@@ -20,7 +20,6 @@ namespace HelenExpress.Data.Entities
         [SimpleIndex] public string ReceiverName { get; set; }
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
-        public string PackageStatus { get; set; }
 
         [Column(TypeName = "date")]
         [SimpleIndex]
@@ -73,5 +72,7 @@ namespace HelenExpress.Data.Entities
         public double? QuotationPriceInUsd { get; set; }
         public string ZoneName { get; set; }
         public bool IsPrintedVatBill { get; set; }
+
+        [Column(TypeName = "jsonb")] public BillDeliveryHistory[] BillDeliveryHistories { get; set; }
     }
 }

@@ -10,6 +10,7 @@ using GraphQLDoorNet.Attributes;
 using GraphQLDoorNet.Models;
 using HelenExpress.Data;
 using HelenExpress.Data.Entities;
+using HelenExpress.Data.JSONModels;
 using HelenExpress.GraphQL.Models.InputModels;
 using HelenExpress.GraphQL.Services.Abstracts;
 using HelenExpress.GraphQL.Services.Contracts;

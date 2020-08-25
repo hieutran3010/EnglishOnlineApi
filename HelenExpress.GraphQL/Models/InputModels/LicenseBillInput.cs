@@ -26,6 +26,5 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public string DestinationCountry { get; set; }
         public double WeightInKg { get; set; }
         public string Status { get; set; }
-        public string PackageStatus { get; set; }
     }
 }

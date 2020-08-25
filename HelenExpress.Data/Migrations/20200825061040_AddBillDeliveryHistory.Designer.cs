@@ -4,15 +4,17 @@ using HelenExpress.Data;
 using HelenExpress.Data.JSONModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    partial class HeLenExpressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200825061040_AddBillDeliveryHistory")]
+    partial class AddBillDeliveryHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -71,7 +73,7 @@ namespace HelenExpress.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnName("date")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnName("description")
@@ -127,6 +129,10 @@ namespace HelenExpress.Data.Migrations
                     b.Property<double?>("OldWeightInKg")
                         .HasColumnName("oldweightinkg")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("PackageStatus")
+                        .HasColumnName("packagestatus")
+                        .HasColumnType("citext");
 
                     b.Property<string>("Period")
                         .HasColumnName("period")
