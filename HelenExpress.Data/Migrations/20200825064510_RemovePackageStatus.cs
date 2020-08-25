@@ -10,7 +10,7 @@ namespace HelenExpress.Data.Migrations
             var migrationPackageStatusSqlSb = new StringBuilder();
             migrationPackageStatusSqlSb.Append("update bill ");
             migrationPackageStatusSqlSb.Append(
-                @"set billdeliveryhistories = FORMAT('[{""date"": null, ""time"": null, ""status"": ""%s""}]', packagestatus)::jsonb ");
+                @"set billdeliveryhistories = FORMAT('[{""Date"": null, ""Time"": null, ""Status"": ""%s""}]', packagestatus)::jsonb ");
             migrationPackageStatusSqlSb.Append(@"where packagestatus is not null or trim(packagestatus) = ''");
             migrationBuilder.Sql(migrationPackageStatusSqlSb.ToString());
 
