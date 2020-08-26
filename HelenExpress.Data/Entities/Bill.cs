@@ -21,7 +21,10 @@ namespace HelenExpress.Data.Entities
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
         public string PackageStatus { get; set; }
-        [SimpleIndex] public DateTime Date { get; set; }
+
+        [Column(TypeName = "date")]
+        [SimpleIndex]
+        public DateTime Date { get; set; }
 
         [SimpleIndex] public string Period { get; set; }
 
