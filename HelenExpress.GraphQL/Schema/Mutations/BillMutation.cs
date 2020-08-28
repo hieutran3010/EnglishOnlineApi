@@ -140,10 +140,10 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             return bill;
         }
 
-        public async Task<MutationResult> FinalBill(FinalBillInput input)
+        public async Task<Bill> FinalBill(Guid billId)
         {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == input.BillId);
+            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == billId);
             if (bill != null)
             {
                 bill.Status = BillStatus.Done;
@@ -153,7 +153,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 await this.UnitOfWork.SaveChangesAsync();
             }
 
-            return new MutationResult {DidSuccess = true};
+            return bill;
         }
 
         public async Task<MutationResult> ArchiveBill(ArchiveBillInput input)
