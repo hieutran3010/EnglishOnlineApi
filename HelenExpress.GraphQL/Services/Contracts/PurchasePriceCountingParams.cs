@@ -14,5 +14,6 @@ namespace HelenExpress.GraphQL.Services.Contracts
         public double FuelChargePercent { get; set; }
         public double? Vat { get; set; }
         public double UsdExchangeRate { get; set; }
+        public bool IsGetLatestQuotation { get; set; }
     }
 }

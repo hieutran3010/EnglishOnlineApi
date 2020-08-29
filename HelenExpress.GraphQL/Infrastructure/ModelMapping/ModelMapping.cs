@@ -20,6 +20,7 @@ namespace HelenExpress.GraphQL.Infrastructure.ModelMapping
 
             config.ForType<BillInput, LicenseBillInput>().TwoWays();
             config.ForType<LicenseBillInput, Bill>();
+            config.ForType<BillQuotationInput, BillQuotation>();
         }
     }
 }

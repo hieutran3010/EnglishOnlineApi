@@ -74,5 +74,6 @@ namespace HelenExpress.Data.Entities
         public bool IsPrintedVatBill { get; set; }
 
         [Column(TypeName = "jsonb")] public BillDeliveryHistory[] BillDeliveryHistories { get; set; }
+        [Column(TypeName = "jsonb")] public BillQuotation[] BillQuotations { get; set; }
     }
 }

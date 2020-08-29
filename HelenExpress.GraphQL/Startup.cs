@@ -10,6 +10,7 @@ using GraphQLDoorNet.Abstracts;
 using GraphQLDoorNet.Extensions;
 using HelenExpress.Data;
 using HelenExpress.Data.MiddleLayers;
+using HelenExpress.GraphQL.HostedServices;
 using HelenExpress.GraphQL.HostedServices.ExportBill;
 using HelenExpress.GraphQL.Infrastructure.ModelMapping;
 using HelenExpress.GraphQL.Schema;
@@ -111,6 +112,7 @@ namespace HelenExpress.GraphQL
                 var taskQueue = provider.GetRequiredService<IBackgroundTaskQueue<BillExportTaskContext>>();
                 return new BillExportHostedService(taskQueue, logger);
             });
+            services.AddHostedService<CacheBillQuotation>();
         }
     }
 }
