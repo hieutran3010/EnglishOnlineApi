@@ -59,6 +59,8 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public bool IsArchived { get; set; }
         public int? UsdExchangeRate { get; set; }
         public double? QuotationPriceInUsd { get; set; }
+        public double? OldQuotationPriceInUsd { get; set; }
+        public DateTime? LastUpdatedQuotation { get; set; }
         public string ZoneName { get; set; }
         public double? PurchasePriceAfterVatInUsd { get; set; }
         public int? PurchasePriceAfterVatInVnd { get; set; }

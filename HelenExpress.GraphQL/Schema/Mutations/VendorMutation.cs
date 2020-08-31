@@ -1,5 +1,6 @@
 ﻿#region
 
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using GraphQLDoorNet;
@@ -29,6 +30,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             if (vendor != null)
             {
                 vendor.VendorQuotations = input.VendorQuotations.Adapt<VendorQuotation[]>();
+                vendor.LastUpdatedQuotation = DateTime.Now;
                 await UnitOfWork.SaveChangesAsync();
 
                 return new MutationResult {DidSuccess = true};

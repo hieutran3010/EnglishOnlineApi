@@ -105,6 +105,7 @@ namespace HelenExpress.GraphQL.Services
             }
 
             result.BillQuotations = billQuotations.ToArray();
+            result.LastUpdatedQuotation = vendor.LastUpdatedQuotation;
 
             return result;
         }

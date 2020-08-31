@@ -69,6 +69,8 @@ namespace HelenExpress.Data.Entities
         public bool IsArchived { get; set; }
         public int? UsdExchangeRate { get; set; }
         public double? QuotationPriceInUsd { get; set; }
+        public double? OldQuotationPriceInUsd { get; set; }
+        public DateTime? LastUpdatedQuotation { get; set; }
         public string ZoneName { get; set; }
         public bool IsPrintedVatBill { get; set; }
 
