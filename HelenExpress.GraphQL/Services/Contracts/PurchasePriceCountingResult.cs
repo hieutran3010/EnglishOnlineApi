@@ -1,4 +1,5 @@
 using System;
+using HelenExpress.Data.JSONModels;
 
 namespace HelenExpress.GraphQL.Services.Contracts
 {
@@ -13,5 +14,7 @@ namespace HelenExpress.GraphQL.Services.Contracts
         public double PurchasePriceAfterVatInUsd { get; set; }
         public int PurchasePriceAfterVatInVnd { get; set; }
         public string ZoneName { get; set; }
+        public BillQuotation[] BillQuotations { get; set; }
+        public DateTime? LastUpdatedQuotation { get; set; }
     }
 }

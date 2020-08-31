@@ -20,7 +20,6 @@ namespace HelenExpress.Data.Entities
         [SimpleIndex] public string ReceiverName { get; set; }
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
-        public string PackageStatus { get; set; }
 
         [Column(TypeName = "date")]
         [SimpleIndex]
@@ -54,7 +53,6 @@ namespace HelenExpress.Data.Entities
         public double? OldPurchasePriceAfterVatInUsd { get; set; }
         public int? OldPurchasePriceAfterVatInVnd { get; set; }
         public double? Profit { get; set; }
-        public double? ProfitBeforeTax { get; set; }
         public uint? Vat { get; set; }
         public string Status { get; set; }
         public double? VendorNetPriceInUsd { get; set; }
@@ -71,7 +69,12 @@ namespace HelenExpress.Data.Entities
         public bool IsArchived { get; set; }
         public int? UsdExchangeRate { get; set; }
         public double? QuotationPriceInUsd { get; set; }
+        public double? OldQuotationPriceInUsd { get; set; }
+        public DateTime? LastUpdatedQuotation { get; set; }
         public string ZoneName { get; set; }
         public bool IsPrintedVatBill { get; set; }
+
+        [Column(TypeName = "jsonb")] public BillDeliveryHistory[] BillDeliveryHistories { get; set; }
+        [Column(TypeName = "jsonb")] public BillQuotation[] BillQuotations { get; set; }
     }
 }

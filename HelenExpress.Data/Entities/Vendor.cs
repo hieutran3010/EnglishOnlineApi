@@ -1,5 +1,6 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using EFPostgresEngagement.DataAnnotationAttributes;
@@ -20,5 +21,6 @@ namespace HelenExpress.Data.Entities
         [Column(TypeName = "jsonb")] public VendorQuotation[] VendorQuotations { get; set; }
         public List<Zone> Zones { get; set; } = new List<Zone>();
         public Bill[] Bills { get; set; }
+        public DateTime? LastUpdatedQuotation { get; set; }
     }
 }

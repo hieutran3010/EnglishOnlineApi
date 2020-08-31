@@ -16,7 +16,7 @@ namespace HelenExpress.Data
 
             var optionsBuilder = new DbContextOptionsBuilder<HeLenExpressDbContext>();
             optionsBuilder.UseNpgsql(connection ??
-                                     "Host=localhost;Port=5432;Username=postgres;Password=1nS1t3;Database=HelenExpress;");
+                                     "Host=localhost;Port=5432;Username=postgres;Password=1nS1t3;Database=he-prod-bk1;");
 
             return new HeLenExpressDbContext(optionsBuilder.Options, null);
         }

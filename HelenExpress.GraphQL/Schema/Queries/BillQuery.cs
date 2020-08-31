@@ -50,8 +50,9 @@ namespace HelenExpress.GraphQL.Schema.Queries
                 TotalPurchase = group.Sum(b => b.PurchasePriceAfterVatInVnd) ?? 0,
                 TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
                 TotalBill = group.Count(),
-                TotalProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
-                TotalProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0
+                TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
+                TotalRawProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
+                TotalProfit = group.Sum(b => b.Profit) ?? 0,
             }).ToList();
 
             return result;
@@ -76,8 +77,9 @@ namespace HelenExpress.GraphQL.Schema.Queries
                         .Sum(c => c.VendorPaymentAmount) ?? 0,
                     TotalBankTransferPayment = group.Where(b => b.VendorPaymentType == PaymentType.BankTransfer)
                         .Sum(c => c.VendorPaymentAmount) ?? 0,
-                    TotalProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
-                    TotalProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0
+                    TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
+                    TotalRawProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
+                    TotalProfit = group.Sum(b => b.Profit) ?? 0,
                 }).ToList();
 
             return result;

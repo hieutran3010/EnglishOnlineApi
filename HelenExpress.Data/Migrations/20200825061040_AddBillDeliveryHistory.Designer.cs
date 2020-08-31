@@ -4,15 +4,17 @@ using HelenExpress.Data;
 using HelenExpress.Data.JSONModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    partial class HeLenExpressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200825061040_AddBillDeliveryHistory")]
+    partial class AddBillDeliveryHistory
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,10 +42,6 @@ namespace HelenExpress.Data.Migrations
 
                     b.Property<BillDeliveryHistory[]>("BillDeliveryHistories")
                         .HasColumnName("billdeliveryhistories")
-                        .HasColumnType("jsonb");
-
-                    b.Property<BillQuotation[]>("BillQuotations")
-                        .HasColumnName("billquotations")
                         .HasColumnType("jsonb");
 
                     b.Property<string>("ChildBillId")
@@ -75,7 +73,7 @@ namespace HelenExpress.Data.Migrations
 
                     b.Property<DateTime>("Date")
                         .HasColumnName("date")
-                        .HasColumnType("date");
+                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
                         .HasColumnName("description")
@@ -96,10 +94,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<bool>("IsPrintedVatBill")
                         .HasColumnName("isprintedvatbill")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedQuotation")
-                        .HasColumnName("lastupdatedquotation")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("LicenseUserId")
                         .HasColumnName("licenseuserid")
@@ -132,13 +126,13 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnName("oldpurchasepriceinvnd")
                         .HasColumnType("integer");
 
-                    b.Property<double?>("OldQuotationPriceInUsd")
-                        .HasColumnName("oldquotationpriceinusd")
-                        .HasColumnType("double precision");
-
                     b.Property<double?>("OldWeightInKg")
                         .HasColumnName("oldweightinkg")
                         .HasColumnType("double precision");
+
+                    b.Property<string>("PackageStatus")
+                        .HasColumnName("packagestatus")
+                        .HasColumnType("citext");
 
                     b.Property<string>("Period")
                         .HasColumnName("period")
@@ -146,6 +140,10 @@ namespace HelenExpress.Data.Migrations
 
                     b.Property<double?>("Profit")
                         .HasColumnName("profit")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("ProfitBeforeTax")
+                        .HasColumnName("profitbeforetax")
                         .HasColumnType("double precision");
 
                     b.Property<double?>("PurchasePriceAfterVatInUsd")
@@ -603,10 +601,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<bool>("IsStopped")
                         .HasColumnName("isstopped")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedQuotation")
-                        .HasColumnName("lastupdatedquotation")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()

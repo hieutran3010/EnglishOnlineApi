@@ -4,15 +4,17 @@ using HelenExpress.Data;
 using HelenExpress.Data.JSONModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    partial class HeLenExpressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200831050239_FixBugProfitCounting")]
+    partial class FixBugProfitCounting
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,10 +99,6 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnName("isprintedvatbill")
                         .HasColumnType("boolean");
 
-                    b.Property<DateTime?>("LastUpdatedQuotation")
-                        .HasColumnName("lastupdatedquotation")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<string>("LicenseUserId")
                         .HasColumnName("licenseuserid")
                         .HasColumnType("citext");
@@ -131,10 +129,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<int?>("OldPurchasePriceInVnd")
                         .HasColumnName("oldpurchasepriceinvnd")
                         .HasColumnType("integer");
-
-                    b.Property<double?>("OldQuotationPriceInUsd")
-                        .HasColumnName("oldquotationpriceinusd")
-                        .HasColumnType("double precision");
 
                     b.Property<double?>("OldWeightInKg")
                         .HasColumnName("oldweightinkg")
@@ -603,10 +597,6 @@ namespace HelenExpress.Data.Migrations
                     b.Property<bool>("IsStopped")
                         .HasColumnName("isstopped")
                         .HasColumnType("boolean");
-
-                    b.Property<DateTime?>("LastUpdatedQuotation")
-                        .HasColumnName("lastupdatedquotation")
-                        .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("ModifiedBy")
                         .IsRequired()
