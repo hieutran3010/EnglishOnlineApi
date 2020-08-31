@@ -1,6 +1,7 @@
 
 using System;
 using GraphQL.Conventions;
+using HelenExpress.GraphQL.Models.InputModels;
 
 namespace HelenExpress.GraphQL.Services.Contracts
 {
@@ -15,5 +16,6 @@ namespace HelenExpress.GraphQL.Services.Contracts
         public double? Vat { get; set; }
         public double UsdExchangeRate { get; set; }
         public bool IsGetLatestQuotation { get; set; }
+        public BillQuotationInput[] BillQuotations { get; set; }
     }
 }

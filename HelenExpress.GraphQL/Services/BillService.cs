@@ -9,6 +9,8 @@ namespace HelenExpress.GraphQL.Services
     using Microsoft.EntityFrameworkCore;
     using System;
     using GraphQLDoorNet.Abstracts;
+    using System.Collections.Generic;
+    using Data.JSONModels;
 
     public class BillService : IBillService
     {
@@ -20,26 +22,33 @@ namespace HelenExpress.GraphQL.Services
                 throw new HttpRequestException("You should provide the countParams");
             }
 
-            if (vendor == null)
+            if (queryParams.IsGetLatestQuotation || queryParams.BillQuotations == null ||
+                !queryParams.BillQuotations.Any())
             {
-                var vendorRepository = unitOfWork.GetRepository<Vendor>();
-                vendor = await vendorRepository.GetQueryable().Where(v => v.Id == queryParams.VendorId)
-                    .Include(v => v.Zones)
-                    .FirstOrDefaultAsync();
                 if (vendor == null)
                 {
-                    throw new HttpRequestException("Cannot find vendor");
+                    var vendorRepository = unitOfWork.GetRepository<Vendor>();
+                    vendor = await vendorRepository.GetQueryable().Where(v => v.Id == queryParams.VendorId)
+                        .Include(v => v.Zones)
+                        .FirstOrDefaultAsync();
+                    if (vendor == null)
+                    {
+                        throw new HttpRequestException("Cannot find vendor");
+                    }
                 }
+
+                var zoneByCountry =
+                    vendor.Zones.FirstOrDefault(z => z.Countries.Contains(queryParams.DestinationCountry));
+                if (zoneByCountry == null)
+                {
+                    throw new HttpRequestException(
+                        $"Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name}");
+                }
+
+                return CountVendorNetPriceInUsd(vendor, queryParams, zoneByCountry);
             }
 
-            var zoneByCountry = vendor.Zones.FirstOrDefault(z => z.Countries.Contains(queryParams.DestinationCountry));
-            if (zoneByCountry == null)
-            {
-                throw new HttpRequestException(
-                    $"Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name}");
-            }
-
-            return CountVendorNetPriceInUsd(vendor, queryParams, zoneByCountry);
+            return this.CountVendorNetPriceInUsdWithCurrentQuotation(queryParams);
         }
 
         /// <summary>
@@ -80,7 +89,50 @@ namespace HelenExpress.GraphQL.Services
 
             var countPerOneKg = quotationByWeight.StartWeight.HasValue;
             var quotationPriceInUsd = fixedZone.PriceInUsd ?? 0;
-            var netPriceInUsd = !countPerOneKg
+
+            this.Count(@params, countPerOneKg, quotationPriceInUsd, result);
+
+            var billQuotations = new List<BillQuotation>();
+            foreach (var vendorQuotation in orderedQuotationByWeight)
+            {
+                var price = vendorQuotation.ZonePrices.FirstOrDefault(z => z.ZoneId == zone.Id);
+
+                billQuotations.Add(new BillQuotation
+                {
+                    StartWeight = vendorQuotation.StartWeight,
+                    EndWeight = vendorQuotation.EndWeight,
+                    PriceInUsd = price?.PriceInUsd
+                });
+            }
+
+            result.BillQuotations = billQuotations.ToArray();
+
+            return result;
+        }
+
+        private PurchasePriceCountingResult CountVendorNetPriceInUsdWithCurrentQuotation(
+            PurchasePriceCountingParams @params)
+        {
+            var result = new PurchasePriceCountingResult();
+
+            var orderedQuotationByWeight = @params.BillQuotations.OrderBy(v => v.EndWeight).ToList();
+
+            // get quotation by weight
+            var quotationByWeight =
+                orderedQuotationByWeight.FirstOrDefault(vq => vq.EndWeight >= @params.WeightInKg) ??
+                orderedQuotationByWeight.Last();
+
+            var countPerOneKg = quotationByWeight.StartWeight.HasValue;
+            var quotationPriceInUsd = quotationByWeight.PriceInUsd ?? 0;
+            this.Count(@params, countPerOneKg, quotationPriceInUsd, result);
+
+            return result;
+        }
+
+        private void Count(PurchasePriceCountingParams @params, bool shouldCountPerOneKg, double quotationPriceInUsd,
+            PurchasePriceCountingResult result)
+        {
+            var netPriceInUsd = !shouldCountPerOneKg
                 ? quotationPriceInUsd
                 : @params.WeightInKg * quotationPriceInUsd;
 
@@ -106,8 +158,6 @@ namespace HelenExpress.GraphQL.Services
 
             result.VendorNetPriceInUsd = Math.Round(netPriceInUsd, 4);
             result.QuotationPriceInUsd = quotationPriceInUsd;
-
-            return result;
         }
     }
 }

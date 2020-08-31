@@ -27,7 +27,7 @@ namespace HelenExpress.GraphQL.HostedServices
             var billRepository = scopedUnitOfWork.GetRepository<Bill>();
             var vendorRepository = scopedUnitOfWork.GetRepository<Vendor>();
             var noCachingQuotationBills = await billRepository.GetQueryable()
-                .Where(b => b.BillQuotations == null)
+                .Where(b => b.BillQuotations == null && b.PurchasePriceAfterVatInUsd > 0)
                 .ToListAsync(cancellationToken: stoppingToken);
 
             foreach (var bill in noCachingQuotationBills)
@@ -38,7 +38,7 @@ namespace HelenExpress.GraphQL.HostedServices
                     .Where(v => v.Id == bill.VendorId)
                     .Include(v => v.Zones)
                     .FirstOrDefaultAsync(cancellationToken: stoppingToken);
-                
+
                 var zone = vendor.Zones.FirstOrDefault(z => z.Countries.Contains(bill.DestinationCountry));
                 if (zone != null && vendor.VendorQuotations != null)
                 {
@@ -59,7 +59,7 @@ namespace HelenExpress.GraphQL.HostedServices
                     bill.BillQuotations = cachingQuotation.ToArray();
                     billRepository.Update(bill);
                 }
-                
+
                 await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
             }
         }
