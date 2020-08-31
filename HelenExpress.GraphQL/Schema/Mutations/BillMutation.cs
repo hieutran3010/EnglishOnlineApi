@@ -149,7 +149,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             if (bill != null)
             {
                 bill.Status = BillStatus.Done;
-                bill.Profit = bill.VendorPaymentAmount - bill.CustomerPaymentAmount;
+                bill.Profit = bill.CustomerPaymentAmount - bill.VendorPaymentAmount;
                 billRepository.Update(bill);
                 await this.UnitOfWork.SaveChangesAsync();
             }
