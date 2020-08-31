@@ -63,6 +63,7 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public double? PurchasePriceAfterVatInUsd { get; set; }
         public int? PurchasePriceAfterVatInVnd { get; set; }
         public bool IsPrintedVatBill { get; set; }
+        public BillQuotationInput[] BillQuotations { get; set; }
     }
 
     [InputType]

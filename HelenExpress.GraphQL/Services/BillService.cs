@@ -22,8 +22,7 @@ namespace HelenExpress.GraphQL.Services
                 throw new HttpRequestException("You should provide the countParams");
             }
 
-            if (queryParams.IsGetLatestQuotation || queryParams.BillQuotations == null ||
-                !queryParams.BillQuotations.Any())
+            if (queryParams.IsGetLatestQuotation)
             {
                 if (vendor == null)
                 {
