@@ -53,7 +53,6 @@ namespace HelenExpress.Data.Entities
         public double? OldPurchasePriceAfterVatInUsd { get; set; }
         public int? OldPurchasePriceAfterVatInVnd { get; set; }
         public double? Profit { get; set; }
-        public double? ProfitBeforeTax { get; set; }
         public uint? Vat { get; set; }
         public string Status { get; set; }
         public double? VendorNetPriceInUsd { get; set; }

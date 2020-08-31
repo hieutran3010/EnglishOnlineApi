@@ -22,7 +22,7 @@
       "launchBrowser": true,
       "launchUrl": "weatherforecast",
       "environmentVariables": {
-        "CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=1nS1t3;Database=heprod;",
+        "CONNECTION_STRING": "Host=localhost;Port=5432;Username=postgres;Password=1nS1t3;Database=he-prod-bk1;",
         "GOOGLE_APPLICATION_CREDENTIALS": "/home/ht/Downloads/service-account.json",
         "ASPNETCORE_ENVIRONMENT": "Development",
         "FIREBASE_PROJECT_ID": "helenexpress-b98df"

@@ -13,7 +13,8 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
         public double TotalBankTransferPayment { get; set; }
         public double TotalDebt { get; set; }
         public double TotalBill { get; set; }
+        public double TotalRawProfit { get; set; }
+        public double TotalRawProfitBeforeTax { get; set; }
         public double TotalProfit { get; set; }
-        public double TotalProfitBeforeTax { get; set; }
     }
 }
