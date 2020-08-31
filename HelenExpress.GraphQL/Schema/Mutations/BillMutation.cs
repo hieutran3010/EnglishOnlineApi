@@ -132,6 +132,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 bill.ZoneName = purchasePrice.ZoneName;
                 bill.PurchasePriceAfterVatInUsd = purchasePrice.PurchasePriceAfterVatInUsd;
                 bill.PurchasePriceAfterVatInVnd = purchasePrice.PurchasePriceAfterVatInVnd;
+                bill.LastUpdatedQuotation = purchasePrice.LastUpdatedQuotation;
+                bill.BillQuotations = purchasePrice.BillQuotations;
 
                 billRepository.Update(bill);
                 await UnitOfWork.SaveChangesAsync();
