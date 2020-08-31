@@ -55,7 +55,7 @@ namespace HelenExpress.GraphQL.HostedServices
                         cachingQuotation.Add(quotation);
                     }
 
-                    bill.LastUpdatedQuotation = vendor.CreatedOn.DateTime;
+                    bill.LastUpdatedQuotation = vendor.ModifiedOn.DateTime;
                     bill.ZoneName = zone.Name;
                     bill.BillQuotations = cachingQuotation.ToArray();
                     billRepository.Update(bill);
