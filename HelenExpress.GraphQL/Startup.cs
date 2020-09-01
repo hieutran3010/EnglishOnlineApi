@@ -112,7 +112,7 @@ namespace HelenExpress.GraphQL
                 var taskQueue = provider.GetRequiredService<IBackgroundTaskQueue<BillExportTaskContext>>();
                 return new BillExportHostedService(taskQueue, logger);
             });
-            services.AddHostedService<CacheBillQuotation>();
+            // services.AddHostedService<CacheBillQuotation>();
         }
     }
 }
