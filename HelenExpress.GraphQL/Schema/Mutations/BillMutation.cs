@@ -120,7 +120,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                         OtherFeeInUsd = bill.VendorOtherFee,
                         Vat = bill.Vat,
                         UsdExchangeRate = bill.UsdExchangeRate ?? 0,
-                        WeightInKg = bill.WeightInKg
+                        WeightInKg = bill.WeightInKg,
+                        IsGetLatestQuotation = true
                     }, vendor);
 
                 bill.QuotationPriceInUsd = purchasePrice.QuotationPriceInUsd;
