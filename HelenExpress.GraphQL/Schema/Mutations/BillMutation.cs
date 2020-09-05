@@ -158,34 +158,6 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             return bill;
         }
 
-        public async Task<MutationResult> ArchiveBill(ArchiveBillInput input)
-        {
-            var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == input.BillId);
-            if (bill != null)
-            {
-                bill.IsArchived = true;
-                billRepository.Update(bill);
-                await this.UnitOfWork.SaveChangesAsync();
-            }
-
-            return new MutationResult {DidSuccess = true};
-        }
-
-        public async Task<MutationResult> CheckPrintedVatBill(Guid billId)
-        {
-            var billRepository = this.UnitOfWork.GetRepository<Bill>();
-            var bill = await billRepository.GetQueryable().FirstOrDefaultAsync(b => b.Id == billId);
-            if (bill != null)
-            {
-                bill.IsPrintedVatBill = true;
-                billRepository.Update(bill);
-                await this.UnitOfWork.SaveChangesAsync();
-            }
-
-            return new MutationResult {DidSuccess = true};
-        }
-
         private async Task CheckAndSaveBillDescription(string description)
         {
             if (string.IsNullOrWhiteSpace(description)) return;
