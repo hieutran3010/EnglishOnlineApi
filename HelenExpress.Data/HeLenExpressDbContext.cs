@@ -37,6 +37,16 @@ namespace HelenExpress.Data
                 .HasOne(p => p.Receiver)
                 .WithMany(b => b.ReceivedBills)
                 .HasForeignKey(b => b.ReceiverId);
+            
+            modelBuilder.Entity<Customer>()
+                .HasMany(e => e.SendBills)
+                .WithOne(e => e.Sender)
+                .OnDelete(DeleteBehavior.Restrict);
+            
+            modelBuilder.Entity<Customer>()
+                .HasMany(e => e.ReceivedBills)
+                .WithOne(e => e.Receiver)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }
