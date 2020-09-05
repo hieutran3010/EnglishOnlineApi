@@ -4,15 +4,17 @@ using HelenExpress.Data;
 using HelenExpress.Data.JSONModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    partial class HeLenExpressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200909093434_AddParcelServiceVendorAssociation")]
+    partial class AddParcelServiceVendorAssociation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -673,61 +675,6 @@ namespace HelenExpress.Data.Migrations
                     b.ToTable("parcelservicezone");
                 });
 
-            modelBuilder.Entity("HelenExpress.Data.Entities.SaleQuotationRate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v1mc()");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnName("createdby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("createdon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<double>("FromWeight")
-                        .HasColumnName("fromweight")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnName("modifiedby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("modifiedon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<double>("Percent")
-                        .HasColumnName("percent")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("ToWeight")
-                        .HasColumnName("toweight")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id")
-                        .HasName("pk_salequotationrate");
-
-                    b.HasIndex("ToWeight")
-                        .HasName("ix_salequotationrate_toweight");
-
-                    b.HasIndex("FromWeight", "ToWeight")
-                        .IsUnique()
-                        .HasName("ix_salequotationrate_fromweight_toweight");
-
-                    b.ToTable("salequotationrate");
-                });
-
             modelBuilder.Entity("HelenExpress.Data.Entities.UserRole", b =>
                 {
                     b.Property<Guid>("Id")
@@ -924,7 +871,7 @@ namespace HelenExpress.Data.Migrations
                         .WithMany("Bills")
                         .HasForeignKey("VendorId")
                         .HasConstraintName("fk_bill_vendors_vendorid")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
@@ -948,7 +895,7 @@ namespace HelenExpress.Data.Migrations
             modelBuilder.Entity("HelenExpress.Data.Entities.ParcelServiceZone", b =>
                 {
                     b.HasOne("HelenExpress.Data.Entities.ParcelService", "ParcelService")
-                        .WithMany("ParcelServiceZones")
+                        .WithMany("InternationalParcelServiceZones")
                         .HasForeignKey("ParcelServiceId")
                         .HasConstraintName("fk_parcelservicezone_parcelservice_parcelserviceid")
                         .OnDelete(DeleteBehavior.Cascade)

@@ -7,6 +7,10 @@ namespace HelenExpress.GraphQL.Services.Abstracts
 
     public interface IBillService
     {
-        Task<PurchasePriceCountingResult> CountPurchasePriceAsync(IUnitOfWork unitOfWork, PurchasePriceCountingParams queryParams, Vendor vendor = null);
+        Task<PurchasePriceCountingResult> CountPurchasePriceAsync(IUnitOfWork unitOfWork,
+            PurchasePriceCountingParams queryParams, Vendor vendor = null);
+
+        public PurchasePriceCountingResult CountVendorNetPriceInUsd(Vendor vendor, PurchasePriceCountingParams @params,
+            Zone zone, double? priceIncreasePercent = null);
     }
 }

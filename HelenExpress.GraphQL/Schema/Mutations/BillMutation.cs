@@ -135,6 +135,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
                 bill.PurchasePriceAfterVatInVnd = purchasePrice.PurchasePriceAfterVatInVnd;
                 bill.LastUpdatedQuotation = purchasePrice.LastUpdatedQuotation;
                 bill.BillQuotations = purchasePrice.BillQuotations;
+                bill.VendorPaymentDebt = purchasePrice.PurchasePriceAfterVatInVnd;
 
                 billRepository.Update(bill);
                 await UnitOfWork.SaveChangesAsync();
@@ -164,7 +165,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
 
             var billDescriptionRepository = UnitOfWork.GetRepository<BillDescription>();
             var existed = await billDescriptionRepository.GetQueryable()
-                .FirstOrDefaultAsync(bd => bd.Name.ToLower() == description.ToLower());
+                .FirstOrDefaultAsync(bd =>
+                    string.Equals(bd.Name.ToLower(), description.ToLower().Trim()));
             if (existed == null) await billDescriptionRepository.AddAsync(new BillDescription {Name = description});
         }
 

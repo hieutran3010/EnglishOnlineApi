@@ -37,5 +37,26 @@ namespace HelenExpress.GraphQL.Schema
         {
             return entityMutation;
         }
+        
+        public EntityMutationBase<ParcelService, ParcelServiceInput> ParcelService([Inject] EntityMutationBase<ParcelService, ParcelServiceInput> entityMutation)
+        {
+            return entityMutation;
+        }
+        
+        public EntityMutationBase<ParcelServiceZone, ParcelServiceZoneInput> ParcelServiceZone([Inject] EntityMutationBase<ParcelServiceZone, ParcelServiceZoneInput> entityMutation)
+        {
+            return entityMutation;
+        }
+
+        public EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> ParcelServiceVendor([Inject] EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> entityMutation)
+        {
+            return entityMutation;
+        }
+
+        public EntityMutationBase<SaleQuotationRate, SaleQuotationRateInput> SaleQuotationRate(
+            [Inject] EntityMutationBase<SaleQuotationRate, SaleQuotationRateInput> entityMutation)
+        {
+            return entityMutation;
+        }
     }
 }

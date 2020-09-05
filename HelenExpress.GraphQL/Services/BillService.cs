@@ -36,15 +36,28 @@ namespace HelenExpress.GraphQL.Services
                     }
                 }
 
-                var zoneByCountry =
-                    vendor.Zones.FirstOrDefault(z => z.Countries.Contains(queryParams.DestinationCountry));
-                if (zoneByCountry == null)
+                var zonesByCountry =
+                    vendor.Zones.Where(z => z.Countries.Contains(queryParams.DestinationCountry)).ToList();
+                if (!zonesByCountry.Any())
                 {
                     throw new HttpRequestException(
                         $"Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name}");
                 }
 
-                return CountVendorNetPriceInUsd(vendor, queryParams, zoneByCountry);
+                var vendorServiceMappingRepo = unitOfWork.GetRepository<ParcelServiceVendor>();
+                var mappedServiceNames = await vendorServiceMappingRepo.GetQueryable()
+                    .Where(vs => vs.VendorId == vendor.Id)
+                    .Include(v => v.ParcelService)
+                    .Select(v => v.ParcelService.Name).ToArrayAsync();
+
+                var zone = this.GetAppropriateZone(zonesByCountry, mappedServiceNames, queryParams.ServiceName);
+                if (zone == null)
+                {
+                    throw new HttpRequestException(
+                        $"Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name} with service {queryParams.ServiceName}");
+                }
+
+                return CountVendorNetPriceInUsd(vendor, queryParams, zone);
             }
 
             return this.CountVendorNetPriceInUsdWithCurrentQuotation(queryParams);
@@ -58,9 +71,10 @@ namespace HelenExpress.GraphQL.Services
         /// <param name="vendor"></param>
         /// <param name="params"></param>
         /// <param name="zone"></param>
+        /// <param name="priceIncreasePercent"></param>
         /// <returns></returns>
-        private PurchasePriceCountingResult CountVendorNetPriceInUsd(Vendor vendor, PurchasePriceCountingParams @params,
-            Zone zone)
+        public PurchasePriceCountingResult CountVendorNetPriceInUsd(Vendor vendor, PurchasePriceCountingParams @params,
+            Zone zone, double? priceIncreasePercent = null)
         {
             var result = new PurchasePriceCountingResult
             {
@@ -89,7 +103,7 @@ namespace HelenExpress.GraphQL.Services
             var countPerOneKg = quotationByWeight.StartWeight.HasValue;
             var quotationPriceInUsd = fixedZone.PriceInUsd ?? 0;
 
-            this.Count(@params, countPerOneKg, quotationPriceInUsd, result);
+            this.Count(@params, countPerOneKg, quotationPriceInUsd, result, priceIncreasePercent);
 
             var billQuotations = new List<BillQuotation>();
             foreach (var vendorQuotation in orderedQuotationByWeight)
@@ -130,7 +144,7 @@ namespace HelenExpress.GraphQL.Services
         }
 
         private void Count(PurchasePriceCountingParams @params, bool shouldCountPerOneKg, double quotationPriceInUsd,
-            PurchasePriceCountingResult result)
+            PurchasePriceCountingResult result, double? priceIncreasePercent = null)
         {
             var netPriceInUsd = !shouldCountPerOneKg
                 ? quotationPriceInUsd
@@ -145,7 +159,7 @@ namespace HelenExpress.GraphQL.Services
             }
 
             var purchasePriceAfterVatInUsd = purchasePriceInUsd;
-            if (@params.Vat.HasValue)
+            if (@params.Vat.HasValue && @params.Vat.Value > 0)
             {
                 purchasePriceAfterVatInUsd += purchasePriceInUsd * (@params.Vat.Value / 100);
             }
@@ -155,9 +169,40 @@ namespace HelenExpress.GraphQL.Services
 
             result.PurchasePriceAfterVatInUsd = Math.Round(purchasePriceAfterVatInUsd, 4);
             result.PurchasePriceAfterVatInVnd = (int) (purchasePriceAfterVatInUsd * @params.UsdExchangeRate);
+            if (priceIncreasePercent.HasValue && priceIncreasePercent.Value > 0)
+            {
+                result.PurchasePriceAfterVatInUsd +=
+                    (result.PurchasePriceAfterVatInUsd * (priceIncreasePercent.Value / 100));
+                result.PurchasePriceAfterVatInVnd += (int) (result.PurchasePriceAfterVatInUsd * @params.UsdExchangeRate);
+            }
 
             result.VendorNetPriceInUsd = Math.Round(netPriceInUsd, 4);
             result.QuotationPriceInUsd = quotationPriceInUsd;
+        }
+
+        private Zone GetAppropriateZone(List<Zone> zonesByCountry, string[] mappedServiceNames,
+            string serviceName)
+        {
+            Zone zone;
+            if (zonesByCountry.Count == 1)
+            {
+                zone = zonesByCountry.First();
+            }
+            else
+            {
+                var selectedService = mappedServiceNames.FirstOrDefault(ms => ms == serviceName);
+                if (selectedService == null)
+                {
+                    zone = zonesByCountry.FirstOrDefault(z => !z.Name.Contains(Constants.ServiceVendorZoneSeparator));
+                }
+                else
+                {
+                    zone = zonesByCountry.FirstOrDefault(z =>
+                        z.Name.StartsWith($"{selectedService}{Constants.ServiceVendorZoneSeparator}"));
+                }
+            }
+
+            return zone;
         }
     }
 }

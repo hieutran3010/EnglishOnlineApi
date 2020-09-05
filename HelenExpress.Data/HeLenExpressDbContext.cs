@@ -18,12 +18,14 @@ namespace HelenExpress.Data
         }
 
         public DbSet<Vendor> Vendors { get; set; }
+        public DbSet<ParcelService> ParcelServices { get; set; }
         public DbSet<Customer> Customers { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<UserRole> UserRoles { get; set; }
         public DbSet<BillDescription> BillDescriptions { get; set; }
         public DbSet<ExportSession> BillExportSessions { get; set; }
         public DbSet<Params> Params { get; set; }
+        public DbSet<SaleQuotationRate> SaleQuotationRates { get; set; }
 
         public override void OnExtendModelCreating(ModelBuilder modelBuilder)
         {
@@ -46,6 +48,11 @@ namespace HelenExpress.Data
             modelBuilder.Entity<Customer>()
                 .HasMany(e => e.ReceivedBills)
                 .WithOne(e => e.Receiver)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Vendor>()
+                .HasMany(e => e.Bills)
+                .WithOne(e => e.Vendor)
                 .OnDelete(DeleteBehavior.Restrict);
         }
     }
