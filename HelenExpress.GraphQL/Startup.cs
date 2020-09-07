@@ -113,7 +113,7 @@ namespace HelenExpress.GraphQL
                 return new BillExportHostedService(taskQueue, logger);
             });
             // services.AddHostedService<CacheBillQuotation>();
-            services.AddHostedService<CorrectCustomerData>();
+            // services.AddHostedService<CorrectCustomerData>();
         }
     }
 }
