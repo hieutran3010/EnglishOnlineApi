@@ -18,7 +18,6 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public string ChildBillId { get; set; }
         public string AirlineBillId { get; set; }
         public Guid? VendorId { get; set; }
-        public string VendorName { get; set; }
         public Guid? SenderId { get; set; }
         public Guid? ReceiverId { get; set; }
         public string InternationalParcelVendor { get; set; }
