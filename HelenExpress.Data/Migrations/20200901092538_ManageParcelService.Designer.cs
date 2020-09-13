@@ -4,15 +4,17 @@ using HelenExpress.Data;
 using HelenExpress.Data.JSONModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace HelenExpress.Data.Migrations
 {
     [DbContext(typeof(HeLenExpressDbContext))]
-    partial class HeLenExpressDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200901092538_ManageParcelService")]
+    partial class ManageParcelService
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -391,8 +393,16 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnName("name")
                         .HasColumnType("citext");
 
+                    b.Property<string>("NickName")
+                        .HasColumnName("nickname")
+                        .HasColumnType("citext");
+
                     b.Property<string>("Phone")
                         .HasColumnName("phone")
+                        .HasColumnType("citext");
+
+                    b.Property<string>("SaleUserId")
+                        .HasColumnName("saleuserid")
                         .HasColumnType("citext");
 
                     b.HasKey("Id")
@@ -409,7 +419,6 @@ namespace HelenExpress.Data.Migrations
                         .HasName("ix_customer_name");
 
                     b.HasIndex("Phone")
-                        .IsUnique()
                         .HasName("ix_customer_phone");
 
                     b.ToTable("customer");
@@ -567,57 +576,6 @@ namespace HelenExpress.Data.Migrations
                     b.ToTable("parcelservice");
                 });
 
-            modelBuilder.Entity("HelenExpress.Data.Entities.ParcelServiceVendor", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v1mc()");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnName("createdby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("createdon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnName("modifiedby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("modifiedon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<Guid>("ParcelServiceId")
-                        .HasColumnName("parcelserviceid")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("VendorId")
-                        .HasColumnName("vendorid")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id")
-                        .HasName("pk_parcelservicevendor");
-
-                    b.HasIndex("VendorId")
-                        .HasName("ix_parcelservicevendor_vendorid");
-
-                    b.HasIndex("ParcelServiceId", "VendorId")
-                        .IsUnique()
-                        .HasName("ix_parcelservicevendor_parcelserviceid_vendorid");
-
-                    b.ToTable("parcelservicevendor");
-                });
-
             modelBuilder.Entity("HelenExpress.Data.Entities.ParcelServiceZone", b =>
                 {
                     b.Property<Guid>("Id")
@@ -671,61 +629,6 @@ namespace HelenExpress.Data.Migrations
                         .HasName("ix_parcelservicezone_name_parcelserviceid");
 
                     b.ToTable("parcelservicezone");
-                });
-
-            modelBuilder.Entity("HelenExpress.Data.Entities.SaleQuotationRate", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("id")
-                        .HasColumnType("uuid")
-                        .HasDefaultValueSql("uuid_generate_v1mc()");
-
-                    b.Property<string>("CreatedBy")
-                        .IsRequired()
-                        .HasColumnName("createdby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("CreatedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("createdon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<double>("FromWeight")
-                        .HasColumnName("fromweight")
-                        .HasColumnType("double precision");
-
-                    b.Property<string>("ModifiedBy")
-                        .IsRequired()
-                        .HasColumnName("modifiedby")
-                        .HasColumnType("citext");
-
-                    b.Property<DateTimeOffset>("ModifiedOn")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnName("modifiedon")
-                        .HasColumnType("timestamp with time zone")
-                        .HasDefaultValueSql("timezone('utc'::text, now())");
-
-                    b.Property<double>("Percent")
-                        .HasColumnName("percent")
-                        .HasColumnType("double precision");
-
-                    b.Property<double?>("ToWeight")
-                        .HasColumnName("toweight")
-                        .HasColumnType("double precision");
-
-                    b.HasKey("Id")
-                        .HasName("pk_salequotationrate");
-
-                    b.HasIndex("ToWeight")
-                        .HasName("ix_salequotationrate_toweight");
-
-                    b.HasIndex("FromWeight", "ToWeight")
-                        .IsUnique()
-                        .HasName("ix_salequotationrate_fromweight_toweight");
-
-                    b.ToTable("salequotationrate");
                 });
 
             modelBuilder.Entity("HelenExpress.Data.Entities.UserRole", b =>
@@ -889,12 +792,19 @@ namespace HelenExpress.Data.Migrations
                         .HasColumnName("name")
                         .HasColumnType("citext");
 
+                    b.Property<Guid?>("ParcelServiceZoneId")
+                        .HasColumnName("parcelservicezoneid")
+                        .HasColumnType("uuid");
+
                     b.Property<Guid>("VendorId")
                         .HasColumnName("vendorid")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id")
                         .HasName("pk_zone");
+
+                    b.HasIndex("ParcelServiceZoneId")
+                        .HasName("ix_zone_parcelservicezoneid");
 
                     b.HasIndex("VendorId")
                         .HasName("ix_zone_vendorid");
@@ -911,36 +821,17 @@ namespace HelenExpress.Data.Migrations
                     b.HasOne("HelenExpress.Data.Entities.Customer", "Receiver")
                         .WithMany("ReceivedBills")
                         .HasForeignKey("ReceiverId")
-                        .HasConstraintName("fk_bill_customers_receiverid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasConstraintName("fk_bill_customers_receiverid");
 
                     b.HasOne("HelenExpress.Data.Entities.Customer", "Sender")
                         .WithMany("SendBills")
                         .HasForeignKey("SenderId")
-                        .HasConstraintName("fk_bill_customers_senderid")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .HasConstraintName("fk_bill_customers_senderid");
 
                     b.HasOne("HelenExpress.Data.Entities.Vendor", "Vendor")
                         .WithMany("Bills")
                         .HasForeignKey("VendorId")
                         .HasConstraintName("fk_bill_vendors_vendorid")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("HelenExpress.Data.Entities.ParcelServiceVendor", b =>
-                {
-                    b.HasOne("HelenExpress.Data.Entities.ParcelService", "ParcelService")
-                        .WithMany("ParcelServiceVendors")
-                        .HasForeignKey("ParcelServiceId")
-                        .HasConstraintName("fk_parcelservicevendor_parcelservice_parcelserviceid")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("HelenExpress.Data.Entities.Vendor", "Vendor")
-                        .WithMany("ParcelServiceVendors")
-                        .HasForeignKey("VendorId")
-                        .HasConstraintName("fk_parcelservicevendor_vendors_vendorid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -948,7 +839,7 @@ namespace HelenExpress.Data.Migrations
             modelBuilder.Entity("HelenExpress.Data.Entities.ParcelServiceZone", b =>
                 {
                     b.HasOne("HelenExpress.Data.Entities.ParcelService", "ParcelService")
-                        .WithMany("ParcelServiceZones")
+                        .WithMany("InternationalParcelServiceZones")
                         .HasForeignKey("ParcelServiceId")
                         .HasConstraintName("fk_parcelservicezone_parcelservice_parcelserviceid")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -957,6 +848,11 @@ namespace HelenExpress.Data.Migrations
 
             modelBuilder.Entity("HelenExpress.Data.Entities.Zone", b =>
                 {
+                    b.HasOne("HelenExpress.Data.Entities.ParcelServiceZone", "ParcelServiceZone")
+                        .WithMany()
+                        .HasForeignKey("ParcelServiceZoneId")
+                        .HasConstraintName("fk_zone_parcelservicezone_parcelservicezoneid");
+
                     b.HasOne("HelenExpress.Data.Entities.Vendor", "Vendor")
                         .WithMany("Zones")
                         .HasForeignKey("VendorId")

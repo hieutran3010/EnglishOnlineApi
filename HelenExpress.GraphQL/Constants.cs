@@ -9,5 +9,7 @@ namespace HelenExpress.GraphQL
             public const string ACCOUNTANT = "accountant";
             public const string ADMIN = "admin";
         }
+        
+        public const char ServiceVendorZoneSeparator = '-';
     }
 }

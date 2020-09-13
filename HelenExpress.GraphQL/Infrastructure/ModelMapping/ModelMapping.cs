@@ -17,10 +17,14 @@ namespace HelenExpress.GraphQL.Infrastructure.ModelMapping
             config.ForType<VendorQuotationPriceInput, VendorQuotationPrice>();
             config.ForType<ZoneInput, Zone>();
             config.ForType<ParamsInput, Params>();
+            config.ForType<ParcelServiceInput, ParcelService>();
+            config.ForType<ParcelServiceZoneInput, ParcelServiceZone>();
 
             config.ForType<BillInput, LicenseBillInput>().TwoWays();
             config.ForType<LicenseBillInput, Bill>();
             config.ForType<BillQuotationInput, BillQuotation>();
+
+            config.ForType<ParcelServiceVendorInput, ParcelServiceVendor>();
         }
     }
 }

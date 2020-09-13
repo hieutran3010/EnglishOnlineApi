@@ -12,12 +12,12 @@ namespace HelenExpress.GraphQL.Schema
 {
     internal sealed class Query : IQuery
     {
-        public EntityQueryBase<Vendor> Vendor([Inject] EntityQueryBase<Vendor> entityQuery)
+        public VendorQuery Vendor([Inject] VendorQuery entityQuery)
         {
             return entityQuery;
         }
 
-        public EntityQueryBase<Zone> Zone([Inject] EntityQueryBase<Zone> entityQuery)
+        public ZoneQuery Zone([Inject] ZoneQuery entityQuery)
         {
             return entityQuery;
         }
@@ -36,13 +36,36 @@ namespace HelenExpress.GraphQL.Schema
         {
             return entityQuery;
         }
-        
+
         public EntityQueryBase<ExportSession> ExportSession([Inject] EntityQueryBase<ExportSession> entityQuery)
         {
             return entityQuery;
         }
-        
+
         public EntityQueryBase<Params> Params([Inject] EntityQueryBase<Params> entityQuery)
+        {
+            return entityQuery;
+        }
+
+        public EntityQueryBase<ParcelService> ParcelService([Inject] EntityQueryBase<ParcelService> entityQuery)
+        {
+            return entityQuery;
+        }
+
+        public EntityQueryBase<ParcelServiceZone> ParcelServiceZone(
+            [Inject] EntityQueryBase<ParcelServiceZone> entityQuery)
+        {
+            return entityQuery;
+        }
+
+        public EntityQueryBase<ParcelServiceVendor> ParcelServiceVendor(
+            [Inject] EntityQueryBase<ParcelServiceVendor> entityQuery)
+        {
+            return entityQuery;
+        }
+        
+        public EntityQueryBase<SaleQuotationRate> SaleQuotationRate(
+            [Inject] EntityQueryBase<SaleQuotationRate> entityQuery)
         {
             return entityQuery;
         }

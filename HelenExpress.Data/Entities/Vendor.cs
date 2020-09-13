@@ -20,6 +20,7 @@ namespace HelenExpress.Data.Entities
         public bool IsStopped { get; set; }
         [Column(TypeName = "jsonb")] public VendorQuotation[] VendorQuotations { get; set; }
         public List<Zone> Zones { get; set; } = new List<Zone>();
+        public List<ParcelServiceVendor> ParcelServiceVendors { get; set; }
         public Bill[] Bills { get; set; }
         public DateTime? LastUpdatedQuotation { get; set; }
     }

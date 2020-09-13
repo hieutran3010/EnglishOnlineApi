@@ -17,5 +17,6 @@ namespace HelenExpress.GraphQL.Services.Contracts
         public double UsdExchangeRate { get; set; }
         public bool IsGetLatestQuotation { get; set; }
         public BillQuotationInput[] BillQuotations { get; set; }
+        public string ServiceName { get; set; }
     }
 }
