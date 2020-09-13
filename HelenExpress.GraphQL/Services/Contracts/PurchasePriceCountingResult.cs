@@ -16,5 +16,7 @@ namespace HelenExpress.GraphQL.Services.Contracts
         public string ZoneName { get; set; }
         public BillQuotation[] BillQuotations { get; set; }
         public DateTime? LastUpdatedQuotation { get; set; }
+        public string Service { get; set; }
+        public Guid VendorId { get; set; }
     }
 }
