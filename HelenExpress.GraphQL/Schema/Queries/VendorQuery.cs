@@ -47,12 +47,12 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     VendorName = vendor.Name
                 };
 
+                
+                var reportDetail = new List<QuotationReportDetail>();
                 var zonesByCountry = vendor.Zones.Where(z => z.Countries.Contains(queryParams.DestinationCountry))
                     .ToList();
                 foreach (var zone in zonesByCountry)
                 {
-                    var reportDetail = new List<QuotationReportDetail>();
-
                     var zoneSplit = this.SplitZoneName(zone.Name);
 
                     var countingParams = new PurchasePriceCountingParams
@@ -76,13 +76,13 @@ namespace HelenExpress.GraphQL.Schema.Queries
                             PurchasePriceAfterVatInVnd = price.PurchasePriceAfterVatInVnd
                         });
                     }
-
-                    if (reportDetail.Any())
-                    {
-                        report.Quotation.AddRange(reportDetail.OrderBy(rd => rd.PurchasePriceInUsd));
-                    }
                 }
-
+                
+                if (reportDetail.Any())
+                {
+                    report.Quotation.AddRange(reportDetail.OrderBy(rd => rd.PurchasePriceAfterVatInVnd));
+                }
+                
                 if (report.Quotation.Any())
                 {
                     result.Add(report);

@@ -173,11 +173,14 @@ namespace HelenExpress.GraphQL.Services
             {
                 result.PurchasePriceAfterVatInUsd +=
                     (result.PurchasePriceAfterVatInUsd * (priceIncreasePercent.Value / 100));
-                result.PurchasePriceAfterVatInVnd += (int) (result.PurchasePriceAfterVatInUsd * @params.UsdExchangeRate);
+                result.PurchasePriceAfterVatInVnd =
+                    (int) (result.PurchasePriceAfterVatInUsd * @params.UsdExchangeRate);
             }
 
             result.VendorNetPriceInUsd = Math.Round(netPriceInUsd, 4);
             result.QuotationPriceInUsd = quotationPriceInUsd;
+            result.Service = @params.ServiceName;
+            result.VendorId = @params.VendorId;
         }
 
         private Zone GetAppropriateZone(List<Zone> zonesByCountry, string[] mappedServiceNames,
