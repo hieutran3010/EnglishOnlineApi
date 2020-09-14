@@ -31,7 +31,7 @@ namespace HelenExpress.GraphQL.HostedServices
             var billRepository = scopedUnitOfWork.GetRepository<Bill>();
 
             // Replace all bad character in phone number
-            var customers = await customerRepository.GetQueryable()
+            var customers = await customerRepository.GetQueryable(false)
                 .ToArrayAsync(cancellationToken: stoppingToken);
 
             var invalidContents = new[] {"khongco", "secapnhat", "kobiet", "khôngcó", "khôngco"};
@@ -58,8 +58,6 @@ namespace HelenExpress.GraphQL.HostedServices
 
                     customerRepository.Update(customer);
                 }
-
-                await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
             }
             catch (Exception e)
             {
@@ -84,8 +82,6 @@ namespace HelenExpress.GraphQL.HostedServices
                 throw;
             }
            
-            await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
-
             // grouped by phone
             try
             {
