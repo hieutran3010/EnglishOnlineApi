@@ -90,8 +90,12 @@ namespace HelenExpress.GraphQL.Services
 
             // get quotation by weight
             var quotationByWeight =
-                orderedQuotationByWeight.FirstOrDefault(vq => vq.EndWeight >= @params.WeightInKg) ??
-                orderedQuotationByWeight.Last();
+                orderedQuotationByWeight.FirstOrDefault(vq =>
+                    @params.WeightInKg <= vq.EndWeight);
+            if (quotationByWeight == null)
+            {
+                return result;
+            }
 
             // get quotation by zone
             var fixedZone = quotationByWeight.ZonePrices.FirstOrDefault(z => z.ZoneId == zone.Id);
