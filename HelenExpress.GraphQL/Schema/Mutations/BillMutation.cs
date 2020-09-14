@@ -140,8 +140,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             input.AirlineBillId = string.IsNullOrWhiteSpace(input.AirlineBillId) ? null : input.AirlineBillId;
             input.ChildBillId = string.IsNullOrWhiteSpace(input.ChildBillId) ? null : input.ChildBillId;
             input.Period = input.Date.ToString("MM-yyyy");
-            input.SenderNameNonUnicode = input.SenderNameNonUnicode?.RemoveUnicode();
-            input.ReceiverNameNonUnicode = input.ReceiverNameNonUnicode?.RemoveUnicode();
+            input.SenderNameNonUnicode = input.SenderName?.RemoveUnicode();
+            input.ReceiverNameNonUnicode = input.ReceiverName?.RemoveUnicode();
         }
 
         private async Task UpdatePriceForBill(Bill bill)
