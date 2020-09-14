@@ -15,5 +15,6 @@ namespace HelenExpress.GraphQL.Models.InputModels
         public string Phone { get; set; }
         public string Address { get; set; }
         public string Hint { get; set; }
+        public string NameNonUnicode { get; set; }
     }
 }

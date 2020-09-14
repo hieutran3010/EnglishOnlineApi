@@ -6,6 +6,7 @@ using GraphQLDoorNet.Abstracts;
 using GraphQLDoorNet.Attributes;
 using GraphQLDoorNet.Models;
 using HelenExpress.Data.Entities;
+using HelenExpress.GraphQL.Infrastructure.Extensions;
 using HelenExpress.GraphQL.Models.InputModels;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,18 @@ namespace HelenExpress.GraphQL.Schema.Mutations
     {
         public CustomerMutation(IUnitOfWork unitOfWork, IInputMapper inputMapper) : base(unitOfWork, inputMapper)
         {
+        }
+
+        public override Task<Customer> Add(CustomerInput input)
+        {
+            input.NameNonUnicode = input.Name?.RemoveUnicode();
+            return base.Add(input);
+        }
+
+        public override Task<Customer> Update(Guid id, CustomerInput input)
+        {
+            input.NameNonUnicode = input.Name?.RemoveUnicode();
+            return base.Update(id, input);
         }
 
         public override async Task<HttpStatus> Delete(Guid id)
