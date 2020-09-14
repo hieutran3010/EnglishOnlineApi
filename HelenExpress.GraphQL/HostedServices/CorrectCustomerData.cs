@@ -41,11 +41,7 @@ namespace HelenExpress.GraphQL.HostedServices
                 foreach (var customer in customers)
                 {
                     customer.Name = customer.Name?.Trim().Replace("-", string.Empty);
-                    if (string.IsNullOrWhiteSpace(customer.Phone))
-                    {
-                        customer.Phone = null;
-                    }
-                    else
+                    if (!string.IsNullOrWhiteSpace(customer.Phone))
                     {
                         customer.Phone = Regex.Replace(customer.Phone, "[^0-9]*", "").TrimStart(new[] {'0'});
                     }
@@ -58,59 +54,41 @@ namespace HelenExpress.GraphQL.HostedServices
 
                     customerRepository.Update(customer);
                 }
+                
+                await GroupedByPhone(customers, billRepository, customerRepository);
+
+                await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-
+            
             try
             {
                 // delete un-phone customers
                 var noPhoneCustomers = await customerRepository.GetQueryable(false)
-                    .Where(c => string.IsNullOrWhiteSpace(c.Phone)).ToArrayAsync(stoppingToken);
+                    .Where(c => string.IsNullOrWhiteSpace(c.Phone)).ToArrayAsync(cancellationToken: stoppingToken);
                 foreach (var noPhoneCustomer in noPhoneCustomers)
                 {
                     await this.TransferRelatedBills(billRepository, noPhoneCustomer);
                 }
                 customerRepository.RemoveRange(noPhoneCustomers);
+                await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 throw;
             }
-           
+
+            
             // grouped by phone
             try
             {
-                var groupedByPhone = await customerRepository.GetQueryable(false)
-                    .Where(c => c.Phone != null)
-                    .OrderBy(c => c.Phone)
-                    .ToListAsync(stoppingToken);
-                var browseData = groupedByPhone.GroupBy(c => c.Phone)
-                    .ToDictionary(t => t.Key, t => t.ToList());
-
-                foreach (var customer in browseData)
-                {
-                    var relatedCustomers = customer.Value;
-                    if (relatedCustomers.Count <= 1)
-                    {
-                        continue;
-                    }
-
-                    // keep the first customer, then remove the rest
-                    var firstCustomer = relatedCustomers.FirstOrDefault();
-                    relatedCustomers.Remove(firstCustomer);
-
-                    foreach (var relatedCustomer in relatedCustomers)
-                    {
-                        await this.TransferRelatedBills(billRepository, relatedCustomer, firstCustomer);
-                    }
-
-                    customerRepository.RemoveRange(relatedCustomers);
-                }
+                var secondCus = await customerRepository.GetQueryable(false).ToListAsync(cancellationToken: stoppingToken);
+                await this.GroupedByPhone(secondCus, billRepository, customerRepository);
 
                 await scopedUnitOfWork.SaveChangesAsync(stoppingToken);
             }
@@ -141,6 +119,37 @@ namespace HelenExpress.GraphQL.HostedServices
             {
                 receiverBill.ReceiverId = replaceCustomer?.Id;
                 billRepository.Update(receiverBill);
+            }
+        }
+
+        private async Task GroupedByPhone(IList<Customer> customers, IRepository<Bill> billRepository,
+            IRepository<Customer> customerRepository)
+        {
+            var groupedByPhone = customers
+                .Where(c => c.Phone != null)
+                .OrderBy(c => c.Phone)
+                .ToList();
+            var browseData = groupedByPhone.GroupBy(c => c.Phone)
+                .ToDictionary(t => t.Key, t => t.ToList());
+
+            foreach (var customer in browseData)
+            {
+                var relatedCustomers = customer.Value;
+                if (relatedCustomers.Count <= 1)
+                {
+                    continue;
+                }
+
+                // keep the first customer, then remove the rest
+                var firstCustomer = relatedCustomers.FirstOrDefault();
+                relatedCustomers.Remove(firstCustomer);
+
+                foreach (var relatedCustomer in relatedCustomers)
+                {
+                    await this.TransferRelatedBills(billRepository, relatedCustomer, firstCustomer);
+                }
+
+                customerRepository.RemoveRange(relatedCustomers);
             }
         }
     }
