@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Logging;
+
 namespace HelenExpress.GraphQL.Services
 {
     using System.Net.Http;
@@ -14,6 +16,13 @@ namespace HelenExpress.GraphQL.Services
 
     public class BillService : IBillService
     {
+        private readonly ILogger<BillService> logger;
+
+        public BillService(ILogger<BillService> logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task<PurchasePriceCountingResult> CountPurchasePriceAsync(IUnitOfWork unitOfWork,
             PurchasePriceCountingParams queryParams, Vendor vendor = null)
         {
@@ -53,8 +62,8 @@ namespace HelenExpress.GraphQL.Services
                 var zone = this.GetAppropriateZone(zonesByCountry, mappedServiceNames, queryParams.ServiceName);
                 if (zone == null)
                 {
-                    throw new HttpRequestException(
-                        $"Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name} with service {queryParams.ServiceName}");
+                    this.logger.LogError(
+                        $"[Handled] Cannot find zone of country {queryParams.DestinationCountry} of Vendor {vendor.Name} with service {queryParams.ServiceName}");
                 }
 
                 return CountVendorNetPriceInUsd(vendor, queryParams, zone);
@@ -76,11 +85,13 @@ namespace HelenExpress.GraphQL.Services
         public PurchasePriceCountingResult CountVendorNetPriceInUsd(Vendor vendor, PurchasePriceCountingParams @params,
             Zone zone, double? priceIncreasePercent = null)
         {
-            var result = new PurchasePriceCountingResult
+            var result = new PurchasePriceCountingResult();
+            if (zone == null)
             {
-                ZoneName = zone.Name
-            };
+                return result;
+            }
 
+            result.ZoneName = zone.Name;
             if (vendor.VendorQuotations == null || !vendor.VendorQuotations.Any())
             {
                 return result;

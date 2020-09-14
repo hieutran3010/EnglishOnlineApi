@@ -12,6 +12,7 @@ namespace HelenExpress.Data.Entities
         [UniqueIndex] public string Code { get; set; }
 
         [SimpleIndex] public string Name { get; set; }
+        [SimpleIndex] public string NameNonUnicode { get; set; }
 
         [UniqueIndex] public string Phone { get; set; }
 

@@ -15,9 +15,11 @@ namespace HelenExpress.Data.Entities
         public string LicenseUserId { get; set; }
         public string AccountantUserId { get; set; }
         [SimpleIndex] public string SenderName { get; set; }
+        [SimpleIndex] public string SenderNameNonUnicode { get; set; }
         public string SenderPhone { get; set; }
         public string SenderAddress { get; set; }
         [SimpleIndex] public string ReceiverName { get; set; }
+        [SimpleIndex] public string ReceiverNameNonUnicode { get; set; }
         public string ReceiverPhone { get; set; }
         public string ReceiverAddress { get; set; }
 

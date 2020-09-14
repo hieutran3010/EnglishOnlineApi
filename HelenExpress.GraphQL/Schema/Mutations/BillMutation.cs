@@ -10,6 +10,7 @@ using GraphQLDoorNet.Attributes;
 using GraphQLDoorNet.Models;
 using HelenExpress.Data;
 using HelenExpress.Data.Entities;
+using HelenExpress.GraphQL.Infrastructure.Extensions;
 using HelenExpress.GraphQL.Models.InputModels;
 using HelenExpress.GraphQL.Services.Abstracts;
 using HelenExpress.GraphQL.Services.Contracts;
@@ -139,6 +140,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             input.AirlineBillId = string.IsNullOrWhiteSpace(input.AirlineBillId) ? null : input.AirlineBillId;
             input.ChildBillId = string.IsNullOrWhiteSpace(input.ChildBillId) ? null : input.ChildBillId;
             input.Period = input.Date.ToString("MM-yyyy");
+            input.SenderNameNonUnicode = input.SenderName?.RemoveUnicode();
+            input.ReceiverNameNonUnicode = input.ReceiverName?.RemoveUnicode();
         }
 
         private async Task UpdatePriceForBill(Bill bill)
