@@ -47,7 +47,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     VendorName = vendor.Name
                 };
 
-                
+
                 var reportDetail = new List<QuotationReportDetail>();
                 var zonesByCountry = vendor.Zones.Where(z => z.Countries.Contains(queryParams.DestinationCountry))
                     .ToList();
@@ -60,7 +60,9 @@ namespace HelenExpress.GraphQL.Schema.Queries
                         Vat = queryParams.Vat,
                         UsdExchangeRate = queryParams.UsdExchangeRate,
                         WeightInKg = queryParams.WeightInKg,
-                        DestinationCountry = queryParams.DestinationCountry
+                        DestinationCountry = queryParams.DestinationCountry,
+                        FuelChargePercent = vendor.FuelChargePercent ?? 0,
+                        OtherFeeInUsd = vendor.OtherFeeInUsd ?? 0
                     };
                     var price = this.billService.CountVendorNetPriceInUsd(vendor, countingParams, zone,
                         increasePercent);
@@ -77,12 +79,12 @@ namespace HelenExpress.GraphQL.Schema.Queries
                         });
                     }
                 }
-                
+
                 if (reportDetail.Any())
                 {
                     report.Quotation.AddRange(reportDetail.OrderBy(rd => rd.PurchasePriceAfterVatInVnd));
                 }
-                
+
                 if (report.Quotation.Any())
                 {
                     result.Add(report);
@@ -102,7 +104,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
             var weight = queryParams.WeightInKg;
             var saleRateRepo = this.UnitOfWork.GetRepository<SaleQuotationRate>();
             var saleRate = await saleRateRepo.GetQueryable().OrderBy(sr => sr.FromWeight)
-                .FirstOrDefaultAsync(sr =>weight>=sr.FromWeight &&  (weight <= sr.ToWeight || sr.ToWeight == null));
+                .FirstOrDefaultAsync(sr => weight >= sr.FromWeight && (weight <= sr.ToWeight || sr.ToWeight == null));
 
             return saleRate?.Percent;
         }
