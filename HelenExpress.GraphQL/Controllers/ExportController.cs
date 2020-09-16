@@ -170,6 +170,7 @@ namespace HelenExpress.GraphQL.Controllers
                                         bill.SalePrice,
                                         bill.CustomerPaymentType,
                                         bill.CustomerPaymentAmount,
+                                        bill.OtherCustomerPaymentAmount,
                                         bill.CustomerPaymentDebt,
                                         bill.VendorNetPriceInUsd,
                                         bill.VendorOtherFee,

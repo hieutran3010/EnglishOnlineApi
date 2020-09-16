@@ -73,10 +73,27 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
                     TotalPurchase = group.Sum(b => b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalBill = group.Count(),
-                    TotalCashPayment = group.Where(b => b.CustomerPaymentType == PaymentType.Cash)
+                    TotalCashPayment = group.Where(b =>
+                            b.CustomerPaymentType == PaymentType.Cash ||
+                            b.CustomerPaymentType == PaymentType.CashAndBankTransfer)
                         .Sum(c => c.CustomerPaymentAmount) ?? 0,
-                    TotalBankTransferPayment = group.Where(b => b.CustomerPaymentType == PaymentType.BankTransfer)
-                        .Sum(c => c.CustomerPaymentAmount) ?? 0,
+                    TotalBankTransferPayment = group.Where(b =>
+                            b.CustomerPaymentType == PaymentType.BankTransfer ||
+                            b.CustomerPaymentType == PaymentType.CashAndBankTransfer)
+                        .Sum(c =>
+                        {
+                            if (c.CustomerPaymentType == PaymentType.BankTransfer)
+                            {
+                                return c.CustomerPaymentAmount;
+                            }
+
+                            if (c.CustomerPaymentType == PaymentType.CashAndBankTransfer)
+                            {
+                                return c.OtherCustomerPaymentAmount ?? 0;
+                            }
+
+                            return 0;
+                        }) ?? 0,
                     TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalRawProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
                     TotalProfit = group.Sum(b => b.Profit) ?? 0,
