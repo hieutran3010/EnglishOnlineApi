@@ -64,6 +64,7 @@ namespace HelenExpress.Data.Entities
         public double? VendorFuelChargeFeeInVnd { get; set; }
         public string CustomerPaymentType { get; set; }
         public double? CustomerPaymentAmount { get; set; }
+        public double? OtherCustomerPaymentAmount { get; set; }
         public double? CustomerPaymentDebt { get; set; }
         public string VendorPaymentType { get; set; }
         public double? VendorPaymentAmount { get; set; }

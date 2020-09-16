@@ -69,7 +69,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     SenderName = group.Key.SenderName,
                     SenderPhone = group.Key.SenderPhone,
                     TotalDebt = group.Sum(b => b.CustomerPaymentDebt) ?? 0,
-                    TotalPayment = group.Sum(b => b.CustomerPaymentAmount) ?? 0,
+                    TotalPayment = group.Sum(b => b.CustomerPaymentAmount + (b.OtherCustomerPaymentAmount ?? 0)) ?? 0,
                     TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
                     TotalPurchase = group.Sum(b => b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalBill = group.Count(),

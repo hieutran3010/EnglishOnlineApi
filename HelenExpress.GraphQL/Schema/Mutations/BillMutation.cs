@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using GraphQLDoorNet;
 using GraphQLDoorNet.Abstracts;
 using GraphQLDoorNet.Attributes;
-using GraphQLDoorNet.Models;
 using HelenExpress.Data;
 using HelenExpress.Data.Entities;
 using HelenExpress.GraphQL.Infrastructure.Extensions;
@@ -116,7 +115,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             if (bill != null)
             {
                 bill.Status = BillStatus.Done;
-                bill.Profit = bill.CustomerPaymentAmount - bill.VendorPaymentAmount;
+                bill.Profit = bill.CustomerPaymentAmount + (bill.OtherCustomerPaymentAmount ?? 0) -
+                              bill.VendorPaymentAmount;
                 billRepository.Update(bill);
                 await this.UnitOfWork.SaveChangesAsync();
             }
