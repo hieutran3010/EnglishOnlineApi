@@ -4,6 +4,7 @@ namespace HelenExpress.Data
     {
         public const string Cash = "CASH";
         public const string BankTransfer = "BANK_TRANSFER";
+        public const string CashAndBankTransfer = "CASH_AND_BANK_TRANSFER";
     }
 
     public class InternationalParcelVendor
