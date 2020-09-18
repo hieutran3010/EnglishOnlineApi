@@ -9,6 +9,7 @@ using GraphQLDoorNet.Attributes;
 using GraphQLDoorNet.Models;
 using HelenExpress.Data.Entities;
 using HelenExpress.GraphQL.Models.InputModels;
+using HelenExpress.GraphQL.Services.Abstracts;
 using Microsoft.EntityFrameworkCore;
 
 #endregion
@@ -18,8 +19,11 @@ namespace HelenExpress.GraphQL.Schema.Mutations
     [ExtendMutation]
     public class ZoneMutation : EntityMutationBase<Zone, ZoneInput>
     {
-        public ZoneMutation(IUnitOfWork unitOfWork, IInputMapper inputMapper) : base(unitOfWork, inputMapper)
+        private readonly IVendorService vendorService;
+
+        public ZoneMutation(IUnitOfWork unitOfWork, IInputMapper inputMapper, IVendorService vendorService) : base(unitOfWork, inputMapper)
         {
+            this.vendorService = vendorService;
         }
 
         public override async Task<HttpStatus> Delete(Guid id)
@@ -29,17 +33,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             var zone = await zoneRepository.GetQueryable().FirstOrDefaultAsync(z => z.Id == id);
             if (zone != null)
             {
-                var vendorRepository = UnitOfWork.GetRepository<Vendor>();
-
-                var vendor = await vendorRepository.GetQueryable().FirstOrDefaultAsync(v => v.Id == zone.VendorId);
-                var vendorQuotations = vendor?.VendorQuotations;
-                if (vendorQuotations != null && vendorQuotations.Any())
-                {
-                    foreach (var vendorQuotation in vendor.VendorQuotations)
-                        vendorQuotation.ZonePrices =
-                            vendorQuotation.ZonePrices.Where(vq => vq.ZoneId != zone.Id).ToArray();
-                    vendorRepository.Update(vendor);
-                }
+                await this.vendorService.UpdateQuotationAfterDeletingZone(this.UnitOfWork, zone.VendorId, zone.Id);
             }
 
             return await base.Delete(id);

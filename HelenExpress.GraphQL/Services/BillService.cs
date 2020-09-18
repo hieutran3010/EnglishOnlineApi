@@ -102,7 +102,8 @@ namespace HelenExpress.GraphQL.Services
             // get quotation by weight
             var quotationByWeight =
                 orderedQuotationByWeight.FirstOrDefault(vq =>
-                    @params.WeightInKg <= vq.EndWeight);
+                    (@params.WeightInKg >= vq.StartWeight || !vq.StartWeight.HasValue)
+                    && @params.WeightInKg <= vq.EndWeight);
             if (quotationByWeight == null)
             {
                 return result;

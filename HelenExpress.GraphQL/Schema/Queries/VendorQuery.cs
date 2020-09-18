@@ -44,9 +44,10 @@ namespace HelenExpress.GraphQL.Schema.Queries
             {
                 var report = new QuotationReport
                 {
-                    VendorName = vendor.Name
+                    VendorName = vendor.Name,
+                    OtherFeeInUsd = vendor.OtherFeeInUsd,
+                    FuelChargePercent = vendor.FuelChargePercent,
                 };
-
 
                 var reportDetail = new List<QuotationReportDetail>();
                 var zonesByCountry = vendor.Zones.Where(z => z.Countries.Contains(queryParams.DestinationCountry))
@@ -75,7 +76,9 @@ namespace HelenExpress.GraphQL.Schema.Queries
                             PurchasePriceInUsd = price.PurchasePriceInUsd,
                             PurchasePriceInVnd = price.PurchasePriceInVnd,
                             PurchasePriceAfterVatInUsd = price.PurchasePriceAfterVatInUsd,
-                            PurchasePriceAfterVatInVnd = price.PurchasePriceAfterVatInVnd
+                            PurchasePriceAfterVatInVnd = price.PurchasePriceAfterVatInVnd,
+                            QuotationPriceInUsd = price.QuotationPriceInUsd,
+                            VendorNetPriceInUsd = price.VendorNetPriceInUsd
                         });
                     }
                 }
