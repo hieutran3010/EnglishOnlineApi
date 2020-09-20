@@ -32,23 +32,26 @@ namespace HelenExpress.GraphQL.Schema
         {
             return entityMutation;
         }
-        
-        public EntityMutationBase<Params, ParamsInput> Params([Inject] EntityMutationBase<Params, ParamsInput> entityMutation)
-        {
-            return entityMutation;
-        }
-        
-        public EntityMutationBase<ParcelService, ParcelServiceInput> ParcelService([Inject] EntityMutationBase<ParcelService, ParcelServiceInput> entityMutation)
-        {
-            return entityMutation;
-        }
-        
-        public EntityMutationBase<ParcelServiceZone, ParcelServiceZoneInput> ParcelServiceZone([Inject] EntityMutationBase<ParcelServiceZone, ParcelServiceZoneInput> entityMutation)
+
+        public EntityMutationBase<Params, ParamsInput> Params(
+            [Inject] EntityMutationBase<Params, ParamsInput> entityMutation)
         {
             return entityMutation;
         }
 
-        public EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> ParcelServiceVendor([Inject] EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> entityMutation)
+        public ParcelServiceMutation ParcelService([Inject] ParcelServiceMutation entityMutation)
+        {
+            return entityMutation;
+        }
+
+        public ParcelServiceZoneMutation ParcelServiceZone(
+            [Inject] ParcelServiceZoneMutation entityMutation)
+        {
+            return entityMutation;
+        }
+
+        public EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> ParcelServiceVendor(
+            [Inject] EntityMutationBase<ParcelServiceVendor, ParcelServiceVendorInput> entityMutation)
         {
             return entityMutation;
         }

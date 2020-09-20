@@ -78,21 +78,6 @@ namespace HelenExpress.Data.Migrations
                                     AFTER UPDATE OF name
                                     ON parcelservice
                                     FOR EACH ROW EXECUTE PROCEDURE tg_fn_sync_serviceName_vendorZones();");
-            // trigger to remove all related vendor zones when deleting a service
-            migrationBuilder.Sql(@"CREATE OR REPLACE FUNCTION tg_fn_sync_serviceDeleted_vendorZones() 
-				                    RETURNS TRIGGER
-				                    LANGUAGE plpgsql
-				                    AS
-				                $$
-				                BEGIN
-									DELETE FROM zone
-									WHERE name LIKE CONCAT(OLD.name, '-', '%');
-								RETURN NULL;
-								END;
-				                $$");
-            migrationBuilder.Sql(@"CREATE TRIGGER tg_sync_serviceDeleted_vendorZones
-									AFTER DELETE ON parcelservice
-									FOR EACH ROW EXECUTE PROCEDURE tg_fn_sync_serviceDeleted_vendorZones();");
             
             // trigger to update service zone name, service zone countries to vendor zones when updating
             migrationBuilder.Sql(@"CREATE OR REPLACE FUNCTION tg_fn_sync_serviceZone_vendorZones() 
@@ -109,7 +94,7 @@ namespace HelenExpress.Data.Migrations
 					                    
 					                    UPDATE zone
 					                    SET name = REPLACE(name, OLD.name, NEW.name), countries = NEW.countries
-					                    WHERE name like CONCAT(serviceName, '-', '%');
+					                    WHERE name = CONCAT(serviceName, '-', OLD.name);
                                         RETURN NULL;
                                     END;
                                     $parcelservicezone_table$");
@@ -144,28 +129,6 @@ namespace HelenExpress.Data.Migrations
             migrationBuilder.Sql(@"CREATE TRIGGER tg_sync_serviceZoneInsert_vendorZones
                                     AFTER INSERT ON parcelservicezone
                                     FOR EACH ROW EXECUTE PROCEDURE tg_fn_sync_serviceZoneInsert_vendorZones();");
-            
-            // when insert a zone from a service that existed a mapping, let auto delete to all mapping
-            migrationBuilder.Sql(@"CREATE OR REPLACE FUNCTION tg_fn_sync_serviceZoneDeleted_vendorZones() 
-                                    RETURNS TRIGGER
-                                    LANGUAGE plpgsql
-                                    AS
-                                $parcelservicezone_table$
-				                DECLARE
-					                serviceName citext;
-                                BEGIN
-					                SELECT name INTO serviceName
-					                FROM parcelservice
-					                WHERE id = OLD.parcelserviceid;
-					                
-					                DELETE FROM zone
-					                WHERE name = CONCAT(serviceName, '-', OLD.name);
-                                    RETURN NULL;
-                                END;
-                                $parcelservicezone_table$");
-            migrationBuilder.Sql(@"CREATE TRIGGER tg_sync_serviceZoneDeleted_vendorZones
-                                    AFTER DELETE ON parcelservicezone
-                                    FOR EACH ROW EXECUTE PROCEDURE tg_fn_sync_serviceZoneDeleted_vendorZones();");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -195,8 +158,6 @@ namespace HelenExpress.Data.Migrations
             migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS tg_fn_sync_serviceName_vendorZones CASCADE;");
             migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS tg_fn_sync_serviceZone_vendorZones CASCADE;");
             migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS tg_fn_sync_serviceZoneInsert_vendorZones CASCADE;");
-            migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS tg_fn_sync_serviceZoneDeleted_vendorZones CASCADE;");
-            migrationBuilder.Sql(@"DROP FUNCTION IF EXISTS tg_fn_sync_serviceDeleted_vendorZones CASCADE;");
         }
     }
 }

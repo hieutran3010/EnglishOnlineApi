@@ -5,6 +5,8 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
     public class QuotationReport
     {
         public string VendorName { get; set; }
+        public double? OtherFeeInUsd { get; set; }
+        public double? FuelChargePercent { get; set; }
         public List<QuotationReportDetail> Quotation { get; set; } = new List<QuotationReportDetail>();
     }
 
@@ -16,5 +18,7 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
         public int PurchasePriceInVnd { get; set; }
         public double PurchasePriceAfterVatInUsd { get; set; }
         public int PurchasePriceAfterVatInVnd { get; set; }
+        public double QuotationPriceInUsd { get; set; }
+        public double VendorNetPriceInUsd { get; set; }
     }
 }

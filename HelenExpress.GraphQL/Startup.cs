@@ -72,6 +72,7 @@ namespace HelenExpress.GraphQL
             services.AddScoped<IInputMapper, InputMapper>();
             services.AddScoped<IBillService, BillService>();
             services.AddScoped<IFileService, FileService>();
+            services.AddScoped<IVendorService, VendorService>();
 
             ModelMapping.Mapping();
 
