@@ -131,7 +131,7 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             var billDescriptionRepository = UnitOfWork.GetRepository<BillDescription>();
             var existed = await billDescriptionRepository.GetQueryable()
                 .FirstOrDefaultAsync(bd =>
-                    string.Equals(bd.Name.ToLower(), description.ToLower().Trim()));
+                    string.Equals(bd.Name.ToLower().Trim(), description.ToLower().Trim()));
             if (existed == null) await billDescriptionRepository.AddAsync(new BillDescription {Name = description});
         }
 
