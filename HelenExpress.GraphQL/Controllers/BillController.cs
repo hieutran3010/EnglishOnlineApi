@@ -46,7 +46,7 @@ namespace HelenExpress.GraphQL.Controllers
                 await this.unitOfWork.SaveChangesAsync();
             }
 
-            return this.Ok();
+            return this.Ok(bill);
         }
         
         [HttpPatch("restoreArchivedBill/{billId}")]
@@ -60,7 +60,7 @@ namespace HelenExpress.GraphQL.Controllers
                 await this.unitOfWork.SaveChangesAsync();
             }
 
-            return this.Ok();
+            return this.Ok(bill);
         }
         
         [HttpPatch("checkPrintedVatBill/{billId}")]
@@ -74,7 +74,7 @@ namespace HelenExpress.GraphQL.Controllers
                 await this.unitOfWork.SaveChangesAsync();
             }
 
-            return this.Ok();
+            return this.Ok(bill);
         }
         
         [HttpPatch("returnFinalBillToAccountant/{billId}")]
@@ -88,7 +88,7 @@ namespace HelenExpress.GraphQL.Controllers
                 await this.unitOfWork.SaveChangesAsync();
             }
 
-            return this.Ok();
+            return this.Ok(bill);
         }
     }
 }
