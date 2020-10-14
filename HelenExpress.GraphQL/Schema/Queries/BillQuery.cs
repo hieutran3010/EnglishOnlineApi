@@ -59,7 +59,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                 TotalProfit = group.Sum(b => b.Profit) ?? 0,
             }).ToList();
 
-            return result;
+            return result.OrderByDescending(v => v.TotalRawProfit).ToList();
         }
 
         public async Task<List<CustomerStatistic>> GetCustomerStatistic(string query)
@@ -100,10 +100,10 @@ namespace HelenExpress.GraphQL.Schema.Queries
                         }) ?? 0,
                     TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalRawProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
-                    TotalProfit = group.Sum(b => b.Profit) ?? 0,
+                    TotalProfit = group.Sum(b => b.Profit) ?? 0
                 }).ToList();
 
-            return result;
+            return result.OrderByDescending(c => c.TotalDebt).ToList();
         }
 
         public async Task<List<SaleReport>> GetSaleReports(string query)
