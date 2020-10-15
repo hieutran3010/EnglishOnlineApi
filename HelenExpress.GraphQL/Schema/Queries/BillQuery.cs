@@ -1,9 +1,11 @@
 #region
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Dynamic.Core;
 using System.Threading.Tasks;
+using AuthService.Firebase.Abstracts;
 using GraphQLDoorNet;
 using GraphQLDoorNet.Abstracts;
 using GraphQLDoorNet.Attributes;
@@ -22,10 +24,12 @@ namespace HelenExpress.GraphQL.Schema.Queries
     public class BillQuery : EntityQueryBase<Bill>
     {
         private readonly IBillService billService;
+        private readonly IAuth auth;
 
-        public BillQuery(IUnitOfWork unitOfWork, IBillService billService) : base(unitOfWork)
+        public BillQuery(IUnitOfWork unitOfWork, IBillService billService, IAuth auth) : base(unitOfWork)
         {
             this.billService = billService;
+            this.auth = auth;
         }
 
         public Task<PurchasePriceCountingResult> CountPurchasePrice(PurchasePriceCountingParams queryParams)
@@ -55,7 +59,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                 TotalProfit = group.Sum(b => b.Profit) ?? 0,
             }).ToList();
 
-            return result;
+            return result.OrderByDescending(v => v.TotalRawProfit).ToList();
         }
 
         public async Task<List<CustomerStatistic>> GetCustomerStatistic(string query)
@@ -96,10 +100,47 @@ namespace HelenExpress.GraphQL.Schema.Queries
                         }) ?? 0,
                     TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalRawProfitBeforeTax = group.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
-                    TotalProfit = group.Sum(b => b.Profit) ?? 0,
+                    TotalProfit = group.Sum(b => b.Profit) ?? 0
                 }).ToList();
 
-            return result;
+            return result.OrderByDescending(c => c.TotalDebt).ToList();
+        }
+
+        public async Task<List<SaleReport>> GetSaleReports(string query)
+        {
+            var result = new List<SaleReport>();
+
+            var billRepository = this.UnitOfWork.GetRepository<Bill>();
+            var validBills = await billRepository.GetQueryable().Where(query)
+                .Select(b => new
+                    {b.SaleUserId, b.SalePrice, b.Profit, b.PurchasePriceAfterVatInVnd, b.PurchasePriceInVnd})
+                .ToListAsync();
+
+            var validGroupedBills = validBills.GroupBy(b => b.SaleUserId)
+                .ToDictionary(x => x.Key, x => x.ToList());
+
+            foreach (var groupedBill in validGroupedBills)
+            {
+                var saleUserId = groupedBill.Key;
+                var bills = groupedBill.Value;
+                var saleReport = new SaleReport
+                {
+                    SaleUserId = saleUserId,
+                    TotalSalePrice = bills.Sum(b => b.SalePrice),
+                    TotalProfit = bills.Sum(b => b.Profit) ?? 0,
+                    TotalRawProfit = bills.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
+                    TotalRawProfitBeforeTax = bills.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
+                    TotalBill = bills.Count,
+                    TotalPurchase = bills.Sum(b => b.PurchasePriceAfterVatInVnd) ?? 0
+                };
+
+                var user = await this.auth.GetUserAsync(saleUserId);
+                saleReport.SaleName = user?.DisplayName;
+
+                result.Add(saleReport);
+            }
+
+            return result.OrderByDescending(s => s.TotalSalePrice).ToList();
         }
     }
 }
