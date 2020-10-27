@@ -33,7 +33,7 @@ namespace HelenExpress.Data.Entities
 
         [SimpleIndex] public string AirlineBillId { get; set; }
 
-        public Guid VendorId { get; set; }
+        public Guid? VendorId { get; set; }
         public string VendorName { get; set; }
         public Vendor Vendor { get; set; }
         public Guid? SenderId { get; set; }

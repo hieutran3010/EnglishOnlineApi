@@ -196,7 +196,7 @@ namespace HelenExpress.GraphQL.Services
             result.VendorNetPriceInUsd = Math.Round(netPriceInUsd, 4);
             result.QuotationPriceInUsd = quotationPriceInUsd;
             result.Service = @params.ServiceName;
-            result.VendorId = @params.VendorId;
+            result.VendorId = @params.VendorId ?? Guid.Empty;
         }
 
         private Zone GetAppropriateZone(List<Zone> zonesByCountry, string[] mappedServiceNames,

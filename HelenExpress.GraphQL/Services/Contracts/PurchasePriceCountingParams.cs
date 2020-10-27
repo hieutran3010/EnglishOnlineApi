@@ -8,7 +8,7 @@ namespace HelenExpress.GraphQL.Services.Contracts
     [InputType]
     public class PurchasePriceCountingParams
     {
-        public Guid VendorId { get; set; }
+        public Guid? VendorId { get; set; }
         public double WeightInKg { get; set; }
         public string DestinationCountry { get; set; }
         public double OtherFeeInUsd { get; set; }

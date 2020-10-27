@@ -48,6 +48,26 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             throw new HttpRequestException("Cannot find vendor for updating");
         }
 
+        public async Task<MutationResult> DeleteVendorOnly(Guid id)
+        {
+            var vendorRepository = this.UnitOfWork.GetRepository<Vendor>();
+            var vendor = await vendorRepository.FindAsync(id);
+            if (vendor != null)
+            {
+                var billRepository = this.UnitOfWork.GetRepository<Bill>();
+                var relatedBills = billRepository.GetQueryable(false).Where(b => b.VendorId == id).AsAsyncEnumerable();
+                await foreach (var bill in relatedBills)
+                {
+                    bill.VendorId = null;
+                }
+            }
+
+            vendorRepository.Remove(vendor);
+            await this.UnitOfWork.SaveChangesAsync();
+
+            return new MutationResult {DidSuccess = true};
+        }
+
         public async Task<ServiceAssignmentResult> AssignParcelServices(Guid[] serviceIds, Guid vendorId)
         {
             var result = new ServiceAssignmentResult();
@@ -89,7 +109,8 @@ namespace HelenExpress.GraphQL.Schema.Mutations
             {
                 var serviceName = deletedAssignment.ParcelService.Name;
                 var relatedZones = await zoneRepository.GetQueryable(false)
-                    .Where(z => z.VendorId == vendorId && z.Name.StartsWith($"{serviceName}{Constants.ServiceVendorZoneSeparator}"))
+                    .Where(z => z.VendorId == vendorId &&
+                                z.Name.StartsWith($"{serviceName}{Constants.ServiceVendorZoneSeparator}"))
                     .ToListAsync();
 
                 deletedZoneIds.AddRange(relatedZones.Select(rz => rz.Id));
