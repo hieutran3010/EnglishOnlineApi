@@ -5,7 +5,7 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
         public string SenderName { get; set; }
         public string SenderPhone { get; set; }
         
-        public double TotalPurchase { get; set; }
+        public long TotalPurchase { get; set; }
         public double TotalSalePrice { get; set; }
         public double TotalPayment { get; set; }
         

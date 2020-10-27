@@ -6,7 +6,7 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
     {
         public Guid VendorId { get; set; }
         public string VendorName { get; set; }
-        public double TotalPurchase { get; set; }
+        public long TotalPurchase { get; set; }
         public double TotalPayment { get; set; }
         public double TotalCashPayment { get; set; }
         public double TotalBankTransferPayment { get; set; }

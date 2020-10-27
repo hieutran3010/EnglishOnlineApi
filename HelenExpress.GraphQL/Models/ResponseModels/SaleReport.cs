@@ -9,6 +9,6 @@ namespace HelenExpress.GraphQL.Models.ResponseModels
         public double TotalRawProfitBeforeTax { get; set; }
         public double TotalProfit { get; set; }
         public int TotalBill { get; set; }
-        public double TotalPurchase { get; set; }
+        public long TotalPurchase { get; set; }
     }
 }
