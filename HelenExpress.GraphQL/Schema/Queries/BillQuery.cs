@@ -40,17 +40,17 @@ namespace HelenExpress.GraphQL.Schema.Queries
         {
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
             var validBills = await billRepository.GetQueryable().Where(query).ToListAsync();
-            var result = validBills.GroupBy(b => new { b.VendorId, b.VendorName }).Select(group => new VendorStatistic
+            var result = validBills.GroupBy(b => new {b.VendorId, b.VendorName}).Select(group => new VendorStatistic
             {
                 VendorId = group.Key.VendorId,
                 VendorName = group.Key.VendorName,
                 TotalDebt = group.Sum(b => b.VendorPaymentDebt) ?? 0,
                 TotalPayment = group.Sum(b => b.VendorPaymentAmount) ?? 0,
                 TotalCashPayment = group.Where(b => b.VendorPaymentType == PaymentType.Cash)
-                      .Sum(c => c.VendorPaymentAmount) ?? 0,
+                    .Sum(c => c.VendorPaymentAmount) ?? 0,
                 TotalBankTransferPayment = group.Where(b => b.VendorPaymentType == PaymentType.BankTransfer)
-                      .Sum(c => c.VendorPaymentAmount) ?? 0,
-                TotalPurchase = new List<long>(group.Select(b => (long)b.PurchasePriceAfterVatInVnd)).Sum(),
+                    .Sum(c => c.VendorPaymentAmount) ?? 0,
+                TotalPurchase = new List<long>(group.Select(b => (long) (b.PurchasePriceAfterVatInVnd ?? 0))).Sum(),
                 TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
                 TotalBill = group.Count(),
                 TotalRawProfit = group.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
@@ -66,7 +66,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
             var validBills = await billRepository.GetQueryable().Where(query).ToListAsync();
 
-            var result = validBills.GroupBy(b => new { b.SenderName, b.SenderPhone })
+            var result = validBills.GroupBy(b => new {b.SenderName, b.SenderPhone})
                 .Select(group => new CustomerStatistic
                 {
                     SenderName = group.Key.SenderName,
@@ -74,7 +74,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     TotalDebt = group.Sum(b => b.CustomerPaymentDebt) ?? 0,
                     TotalPayment = group.Sum(b => b.CustomerPaymentAmount + (b.OtherCustomerPaymentAmount ?? 0)) ?? 0,
                     TotalSalePrice = group.Sum(b => b.SalePrice) ?? 0,
-                    TotalPurchase = new List<long>(group.Select(b => (long)b.PurchasePriceAfterVatInVnd)).Sum(),
+                    TotalPurchase = new List<long>(group.Select(b => (long) (b.PurchasePriceAfterVatInVnd ?? 0))).Sum(),
                     TotalBill = group.Count(),
                     TotalCashPayment = group.Where(b =>
                             b.CustomerPaymentType == PaymentType.Cash ||
@@ -112,7 +112,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
             var billRepository = this.UnitOfWork.GetRepository<Bill>();
             var validBills = await billRepository.GetQueryable().Where(query)
                 .Select(b => new
-                { b.SaleUserId, b.SalePrice, b.Profit, b.PurchasePriceAfterVatInVnd, b.PurchasePriceInVnd })
+                    {b.SaleUserId, b.SalePrice, b.Profit, b.PurchasePriceAfterVatInVnd, b.PurchasePriceInVnd})
                 .ToListAsync();
 
             var validGroupedBills = validBills.GroupBy(b => b.SaleUserId)
@@ -131,7 +131,7 @@ namespace HelenExpress.GraphQL.Schema.Queries
                     TotalRawProfit = bills.Sum(b => b.SalePrice - b.PurchasePriceAfterVatInVnd) ?? 0,
                     TotalRawProfitBeforeTax = bills.Sum(b => b.SalePrice - b.PurchasePriceInVnd) ?? 0,
                     TotalBill = bills.Count,
-                    TotalPurchase = new List<long>(bills.Select(b => (long)b.PurchasePriceAfterVatInVnd)).Sum()
+                    TotalPurchase = new List<long>(bills.Select(b => (long) (b.PurchasePriceAfterVatInVnd ?? 0))).Sum()
                 };
 
                 var user = await this.auth.GetUserAsync(saleUserId);
