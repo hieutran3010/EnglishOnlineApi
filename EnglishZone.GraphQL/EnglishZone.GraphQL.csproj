@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <AssemblyName>EnglishZone.GraphQL</AssemblyName>
+        <RootNamespace>EnglishZone.GraphQL</RootNamespace>
+        <PackageId>EnglishZone.GraphQL</PackageId>
+        <Authors>EnglishZone.GraphQL</Authors>
+        <Company>EnglishZone.GraphQL</Company>
+        <Product>EnglishZone.GraphQL</Product>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <PackageReference Include="DotNetCore.NPOI" Version="1.2.2" />
+      <PackageReference Include="EFPostgresEngagement" Version="1.0.6" />
+      <PackageReference Include="GraphQLDoorNet" Version="1.2.4" />
+      <PackageReference Include="Mapster" Version="6.5.0" />
+      <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+      <PackageReference Include="Sentry.AspNetCore" Version="2.1.6" />
+      <PackageReference Include="Sentry.Extensions.Logging" Version="2.1.6" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\BackgroundTaskQueueNet\BackgroundTaskQueueNet.csproj" />
+      <ProjectReference Include="..\AuthService.Firebase\AuthService.Firebase.csproj" />
+      <ProjectReference Include="..\EnglishZone.Data\EnglishZone.Data.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Comparers" />
+      <Folder Include="Models\ResponseModels" />
+      <Folder Include="Schema\Mutations" />
+      <Folder Include="Schema\Queries" />
+    </ItemGroup>
+
+</Project>

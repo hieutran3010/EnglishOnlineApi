@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelenExpress.GraphQL", "HelenExpress.GraphQL\HelenExpress.GraphQL.csproj", "{0553BFBD-1288-416B-B894-1A8629E6118C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnglishZone.GraphQL", "EnglishZone.GraphQL\EnglishZone.GraphQL.csproj", "{0553BFBD-1288-416B-B894-1A8629E6118C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelenExpress.Data", "HelenExpress.Data\HelenExpress.Data.csproj", "{CFE3387A-9C16-450C-BDA3-5B4FA619443C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnglishZone.Data", "EnglishZone.Data\EnglishZone.Data.csproj", "{CFE3387A-9C16-450C-BDA3-5B4FA619443C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService.Firebase", "AuthService.Firebase\AuthService.Firebase.csproj", "{5054542F-AC28-4D05-A2B1-C0916EF02068}"
 EndProject
