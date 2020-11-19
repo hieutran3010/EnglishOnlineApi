@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -23,11 +24,13 @@ namespace AuthService.Firebase.Firebase
         {
             var googleCredentialsFilePath = Environment.GetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS");
             var fireBaseAppConfig = Environment.GetEnvironmentVariable("FIREBASE_CONFIG");
-            if (!string.IsNullOrWhiteSpace(googleCredentialsFilePath))
+            if (!string.IsNullOrWhiteSpace(googleCredentialsFilePath) && File.Exists(googleCredentialsFilePath))
+            {
                 FirebaseApp.Create(new AppOptions
                 {
                     Credential = GoogleCredential.GetApplicationDefault()
                 });
+            }
             else if (!string.IsNullOrWhiteSpace(fireBaseAppConfig))
                 FirebaseApp.Create(new AppOptions
                 {
